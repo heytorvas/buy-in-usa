@@ -18,7 +18,7 @@ st.markdown(f"""
             }}
             h2 {{
                 text-align: center;
-                font-size: 2.5rem;
+                font-size: 2rem;
             }}
             h3 {{
                 text-align: center;
