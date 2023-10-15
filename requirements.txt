@@ -1,0 +1,4 @@
+beautifulsoup4==4.12.2
+dynaconf==3.2.2
+requests==2.31.0
+streamlit==1.27.0
