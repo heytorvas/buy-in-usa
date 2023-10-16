@@ -1,9 +1,7 @@
+import re
 import requests
 from bs4 import BeautifulSoup
-import streamlit as st
-from datetime import timedelta
 
-import re
 
 def formatter_state_name(name):
     return str(re.sub("[\(\[].*?[\)\]]", "", name)).strip()
@@ -46,7 +44,6 @@ def get_usa_tax_data():
             data[formatter_state_name(col[0].text)] = formatter_state_tax(col[4].text)
     return data
 
-@st.cache_resource(ttl=timedelta(minutes=10), show_spinner=False)
 def get_dollar_data():
     DOLLAR_SOURCE_URL = 'https://valor.globo.com/valor-data/'
     soup = get_website_from_request(DOLLAR_SOURCE_URL)
