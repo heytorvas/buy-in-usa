@@ -1,0 +1,10 @@
+[
+  { "code": "ITAU", "name": "Itaú", "spread": 0.05 },
+  { "code": "NUBANK", "name": "Nubank", "spread": 0.04 },
+  { "code": "BRADESCO", "name": "Bradesco", "spread": 0.055 },
+  { "code": "SANTANDER", "name": "Santander", "spread": 0.05 },
+  { "code": "BB", "name": "Banco do Brasil", "spread": 0.045 },
+  { "code": "C6", "name": "C6 Bank", "spread": 0.035 },
+  { "code": "INTER", "name": "Inter", "spread": 0.04 },
+  { "code": "WISE", "name": "Wise", "spread": 0.006 }
+]
