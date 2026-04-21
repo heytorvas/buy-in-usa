@@ -1,6 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { AppHeader } from "@/components/calculator/AppHeader";
-import { BottomNav } from "@/components/calculator/BottomNav";
 import { PriceInput } from "@/components/calculator/PriceInput";
 import { StateSelect, states } from "@/components/calculator/StateSelect";
 import { PaymentSection, banks } from "@/components/calculator/PaymentSection";
@@ -52,11 +50,20 @@ const Index = () => {
 
   const showResult = hasCalculated && result && priceUSD > 0;
 
+  const handleCalculate = () => {
+    setHasCalculated(true);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document
+          .getElementById("resultado")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <AppHeader ptax={ptax} loading={loading} />
-
-      <main className="flex-grow w-full max-w-2xl mx-auto px-6 py-8 pb-32">
+      <main className="flex-grow w-full max-w-2xl mx-auto px-6 py-8 pb-12">
         <div className="mb-10 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
             EUA x Brasil:<br className="md:hidden" /> Calculadora de Compras
@@ -89,15 +96,15 @@ const Index = () => {
 
           <button
             type="button"
-            onClick={() => setHasCalculated(true)}
+            onClick={handleCalculate}
             disabled={priceUSD <= 0 || !ptax}
             className="w-full bg-primary hover:bg-primary-deep text-primary-foreground font-bold text-lg py-5 rounded-2xl shadow-warm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            Calcular Total
+            {loading ? "Buscando cotação PTAX…" : "Calcular Total"}
           </button>
 
           {showResult && result && (
-            <section className="flex flex-col gap-4 mt-4">
+            <section id="resultado" className="flex flex-col gap-4 mt-4 scroll-mt-6">
               <StepHeader number={4} title="Resultado Final" variant="sage" />
               <ResultCard
                 result={result}
@@ -105,13 +112,12 @@ const Index = () => {
                 stateTaxRate={stateInfo.tax}
                 spreadRate={bankInfo.spread}
                 isCredit={method === "credit"}
+                ptax={ptax}
               />
             </section>
           )}
         </div>
       </main>
-
-      <BottomNav />
     </div>
   );
 };
