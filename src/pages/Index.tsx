@@ -119,6 +119,7 @@ const Index = () => {
                 spreadRate={bankInfo.spread}
                 isCredit={method === "credit"}
                 ptax={ptax}
+                stateTaxMeta={stateTaxMeta}
               />
             </section>
           )}
