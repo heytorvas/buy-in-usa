@@ -1,6 +1,5 @@
 import { MapPin, ChevronDown } from "lucide-react";
 import statesRaw from "@/data/usa_state_tax.json";
-import { formatPercent } from "@/lib/calculator";
 
 export interface UsState {
   code: string;
@@ -33,7 +32,7 @@ export function StateSelect({ value, onChange }: StateSelectProps) {
         >
           {states.map((s) => (
             <option key={s.code} value={s.code}>
-              {s.name} ({formatPercent(s.tax, 2)})
+              {s.name}
             </option>
           ))}
         </select>

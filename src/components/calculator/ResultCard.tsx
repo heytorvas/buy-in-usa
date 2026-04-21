@@ -1,4 +1,5 @@
 import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
+import type { PtaxResult } from "@/lib/ptax";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
@@ -8,6 +9,7 @@ interface ResultCardProps {
   stateTaxRate: number;
   spreadRate: number;
   isCredit: boolean;
+  ptax?: PtaxResult;
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -18,7 +20,7 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit }: ResultCardProps) {
+export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax }: ResultCardProps) {
   const { finalBRL, audit } = result;
   const taxesBRL = audit.stateTaxBRL + audit.spreadBRL + audit.iofBRL;
   const totalForChart = audit.basePriceBRL + taxesBRL;
@@ -110,6 +112,15 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
                 R$ {audit.effectiveExchangeRate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} por US$ 1,00
               </dd>
             </div>
+            {ptax && (
+              <div>
+                <dt className="font-semibold text-foreground">Cotação PTAX</dt>
+                <dd className="tabular-nums">
+                  R$ {ptax.rate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} — {new Date(ptax.date + "T00:00:00").toLocaleDateString("pt-BR")}
+                  {ptax.fallback && " (cotação de referência)"}
+                </dd>
+              </div>
+            )}
           </dl>
         </div>
       </div>

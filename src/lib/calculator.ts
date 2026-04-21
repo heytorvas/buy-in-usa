@@ -8,7 +8,7 @@
  *   C) Apply IOF (1.1% cash/global account, 3.5% credit card)
  */
 
-export type PaymentMethod = "cash" | "credit";
+export type PaymentMethod = "cash" | "global" | "credit";
 
 export interface CalculatorInput {
   priceUSD: number;

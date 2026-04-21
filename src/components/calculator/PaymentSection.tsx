@@ -17,6 +17,12 @@ interface PaymentSectionProps {
   onBankChange: (code: string) => void;
 }
 
+const METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
+  { value: "cash", label: "Dinheiro" },
+  { value: "global", label: "Conta Internacional" },
+  { value: "credit", label: "Cartão de Crédito" },
+];
+
 export function PaymentSection({ method, onMethodChange, bankCode, onBankChange }: PaymentSectionProps) {
   const isCredit = method === "credit";
   return (
@@ -25,33 +31,26 @@ export function PaymentSection({ method, onMethodChange, bankCode, onBankChange 
         <label className="block text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
           Método de Pagamento
         </label>
-        <div className="flex bg-input-bg rounded-xl p-1" role="tablist" aria-label="Método de pagamento">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={!isCredit}
-            onClick={() => onMethodChange("cash")}
-            className={`flex-1 py-3 text-center rounded-lg text-sm transition-all ${
-              !isCredit
-                ? "bg-card shadow-sm font-bold text-primary"
-                : "font-medium text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Dinheiro / Wise
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={isCredit}
-            onClick={() => onMethodChange("credit")}
-            className={`flex-1 py-3 text-center rounded-lg text-sm transition-all ${
-              isCredit
-                ? "bg-card shadow-sm font-bold text-primary"
-                : "font-medium text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Cartão de Crédito
-          </button>
+        <div className="flex bg-input-bg rounded-xl p-1 gap-1" role="tablist" aria-label="Método de pagamento">
+          {METHOD_OPTIONS.map((opt) => {
+            const selected = method === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                onClick={() => onMethodChange(opt.value)}
+                className={`flex-1 py-3 px-2 text-center rounded-lg text-xs leading-tight transition-all ${
+                  selected
+                    ? "bg-card shadow-sm font-bold text-primary"
+                    : "font-medium text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -60,7 +59,7 @@ export function PaymentSection({ method, onMethodChange, bankCode, onBankChange 
           htmlFor="bank-select"
           className="block text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider"
         >
-          Seu Banco Brasileiro (Spread)
+          Seu Banco Brasileiro
         </label>
         <div className="relative">
           <select
