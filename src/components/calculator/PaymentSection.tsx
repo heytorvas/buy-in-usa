@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import banksRaw from "@/data/banks_spread.json";
-import { formatPercent, type PaymentMethod } from "@/lib/calculator";
+import { type PaymentMethod } from "@/lib/calculator";
 
 export interface Bank {
   code: string;
