@@ -1,5 +1,6 @@
 import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
 import type { PtaxResult } from "@/lib/ptax";
+import type { StateTaxMeta } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface ResultCardProps {
   spreadRate: number;
   isCredit: boolean;
   ptax?: PtaxResult;
+  stateTaxMeta?: StateTaxMeta;
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -20,7 +22,7 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax }: ResultCardProps) {
+export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax, stateTaxMeta }: ResultCardProps) {
   const { finalBRL, audit } = result;
   const taxesBRL = audit.stateTaxBRL + audit.spreadBRL + audit.iofBRL;
   const totalForChart = audit.basePriceBRL + taxesBRL;
@@ -97,6 +99,12 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
             <div>
               <dt className="font-semibold text-foreground">Taxa de Venda (EUA)</dt>
               <dd>Imposto estadual aplicado no momento da compra nos Estados Unidos.</dd>
+              {stateTaxMeta && (
+                <dd className="text-[11px] mt-1">
+                  Tabela oficial: <span className="capitalize">{stateTaxMeta.last_update}</span>
+                  {" · "}atualizado em {stateTaxMeta.updated_at}
+                </dd>
+              )}
             </div>
             <div>
               <dt className="font-semibold text-foreground">IOF</dt>

@@ -1,6 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import banksRaw from "@/data/banks_spread.json";
-import { formatPercent, type PaymentMethod } from "@/lib/calculator";
+import { type PaymentMethod } from "@/lib/calculator";
 
 export interface Bank {
   code: string;
@@ -71,7 +71,7 @@ export function PaymentSection({ method, onMethodChange, bankCode, onBankChange 
           >
             {banks.map((b) => (
               <option key={b.code} value={b.code}>
-                {b.name} ({formatPercent(b.spread, 1)})
+                {b.name}
               </option>
             ))}
           </select>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PriceInput } from "@/components/calculator/PriceInput";
-import { StateSelect, states } from "@/components/calculator/StateSelect";
+import { StateSelect, states, stateTaxMeta } from "@/components/calculator/StateSelect";
 import { PaymentSection, banks } from "@/components/calculator/PaymentSection";
 import { ResultCard } from "@/components/calculator/ResultCard";
 import { StepHeader } from "@/components/calculator/StepHeader";
@@ -15,6 +15,12 @@ const Index = () => {
   const [ptax, setPtax] = useState<PtaxResult | undefined>();
   const [loading, setLoading] = useState(true);
   const [hasCalculated, setHasCalculated] = useState(false);
+
+  // Reset calculated result whenever any input changes — user must
+  // re-trigger the calculation explicitly via the button.
+  useEffect(() => {
+    setHasCalculated(false);
+  }, [priceStr, stateCode, method, bankCode]);
 
   useEffect(() => {
     let alive = true;
@@ -69,7 +75,7 @@ const Index = () => {
             EUA x Brasil:<br className="md:hidden" /> Calculadora de Compras
           </h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Compare o custo real entre pagamento em dinheiro/Wise e cartão de crédito internacional.
+            Compare o custo real entre pagamento em dinheiro, conta internacional e cartão de crédito internacional.
           </p>
         </div>
 
@@ -113,6 +119,7 @@ const Index = () => {
                 spreadRate={bankInfo.spread}
                 isCredit={method === "credit"}
                 ptax={ptax}
+                stateTaxMeta={stateTaxMeta}
               />
             </section>
           )}
