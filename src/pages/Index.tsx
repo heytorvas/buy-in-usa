@@ -75,7 +75,7 @@ const Index = () => {
             EUA x Brasil:<br className="md:hidden" /> Calculadora de Compras
           </h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Compare o custo real entre pagamento em dinheiro/Wise e cartão de crédito internacional.
+            Compare o custo real entre pagamento em dinheiro, conta internacional e cartão de crédito internacional.
           </p>
         </div>
 
