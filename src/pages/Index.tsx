@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { PriceInput } from "@/components/calculator/PriceInput";
-import { StateSelect, states } from "@/components/calculator/StateSelect";
+import { StateSelect, states, stateTaxMeta } from "@/components/calculator/StateSelect";
 import { PaymentSection, banks } from "@/components/calculator/PaymentSection";
 import { ResultCard } from "@/components/calculator/ResultCard";
 import { StepHeader } from "@/components/calculator/StepHeader";
