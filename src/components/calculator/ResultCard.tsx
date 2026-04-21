@@ -1,5 +1,6 @@
 import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
 import type { PtaxResult } from "@/lib/ptax";
+import type { StateTaxMeta } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface ResultCardProps {
   spreadRate: number;
   isCredit: boolean;
   ptax?: PtaxResult;
+  stateTaxMeta?: StateTaxMeta;
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
