@@ -22,7 +22,7 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax }: ResultCardProps) {
+export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax, stateTaxMeta }: ResultCardProps) {
   const { finalBRL, audit } = result;
   const taxesBRL = audit.stateTaxBRL + audit.spreadBRL + audit.iofBRL;
   const totalForChart = audit.basePriceBRL + taxesBRL;
