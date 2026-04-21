@@ -99,6 +99,12 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
             <div>
               <dt className="font-semibold text-foreground">Taxa de Venda (EUA)</dt>
               <dd>Imposto estadual aplicado no momento da compra nos Estados Unidos.</dd>
+              {stateTaxMeta && (
+                <dd className="text-[11px] mt-1">
+                  Tabela oficial: <span className="capitalize">{stateTaxMeta.last_update}</span>
+                  {" · "}atualizado em {stateTaxMeta.updated_at}
+                </dd>
+              )}
             </div>
             <div>
               <dt className="font-semibold text-foreground">IOF</dt>
