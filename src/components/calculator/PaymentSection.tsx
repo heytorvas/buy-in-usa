@@ -71,7 +71,7 @@ export function PaymentSection({ method, onMethodChange, bankCode, onBankChange 
           >
             {banks.map((b) => (
               <option key={b.code} value={b.code}>
-                {b.name} ({formatPercent(b.spread, 1)})
+                {b.name}
               </option>
             ))}
           </select>
