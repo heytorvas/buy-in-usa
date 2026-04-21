@@ -7,7 +7,49 @@ export interface UsState {
   tax: number;
 }
 
-const states = statesRaw as UsState[];
+export interface StateTaxMeta {
+  last_update: string;
+  updated_at: string;
+}
+
+interface StateTaxFile {
+  states: Record<string, string>;
+  last_update: string;
+  updated_at: string;
+}
+
+const file = statesRaw as StateTaxFile;
+
+// Build a stable list of states with codes derived from name initials.
+// Uses well-known 2-letter postal codes for ordering/keying.
+const POSTAL_CODES: Record<string, string> = {
+  Alabama: "AL", Alaska: "AK", Arizona: "AZ", Arkansas: "AR",
+  California: "CA", Colorado: "CO", Connecticut: "CT", Delaware: "DE",
+  Florida: "FL", Georgia: "GA", Hawaii: "HI", Idaho: "ID",
+  Illinois: "IL", Indiana: "IN", Iowa: "IA", Kansas: "KS",
+  Kentucky: "KY", Louisiana: "LA", Maine: "ME", Maryland: "MD",
+  Massachusetts: "MA", Michigan: "MI", Minnesota: "MN", Mississippi: "MS",
+  Missouri: "MO", Montana: "MT", Nebraska: "NE", Nevada: "NV",
+  "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
+  "North Carolina": "NC", "North Dakota": "ND", Ohio: "OH", Oklahoma: "OK",
+  Oregon: "OR", Pennsylvania: "PA", "Rhode Island": "RI", "South Carolina": "SC",
+  "South Dakota": "SD", Tennessee: "TN", Texas: "TX", Utah: "UT",
+  Vermont: "VT", Virginia: "VA", Washington: "WA", "West Virginia": "WV",
+  Wisconsin: "WI", Wyoming: "WY", "District of Columbia": "DC",
+};
+
+const states: UsState[] = Object.entries(file.states)
+  .map(([name, pct]) => ({
+    code: POSTAL_CODES[name] ?? name.slice(0, 2).toUpperCase(),
+    name,
+    tax: parseFloat(pct) / 100,
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const stateTaxMeta: StateTaxMeta = {
+  last_update: file.last_update,
+  updated_at: file.updated_at,
+};
 
 interface StateSelectProps {
   value: string;
@@ -43,4 +85,4 @@ export function StateSelect({ value, onChange }: StateSelectProps) {
   );
 }
 
-export { states };
+export { states, stateTaxMeta };
