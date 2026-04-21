@@ -16,6 +16,12 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [hasCalculated, setHasCalculated] = useState(false);
 
+  // Reset calculated result whenever any input changes — user must
+  // re-trigger the calculation explicitly via the button.
+  useEffect(() => {
+    setHasCalculated(false);
+  }, [priceStr, stateCode, method, bankCode]);
+
   useEffect(() => {
     let alive = true;
     fetchLatestPtax()
