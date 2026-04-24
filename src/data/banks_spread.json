@@ -5,8 +5,8 @@
     "code": "CASH",
     "name": "Casa de câmbio (dólar turismo)",
     "spread": 0.05,
-    "iof": 0.011,
-    "note": "Spread médio aplicado por casas de câmbio sobre o PTAX (≈ 4-6%). IOF reduzido para câmbio em espécie a partir de 2025."
+    "iof": 0.035,
+    "note": "Spread médio aplicado por casas de câmbio sobre o PTAX (≈ 4-6%). IOF de 3,5% para câmbio em espécie (compra de moeda) conforme regra vigente em 2025."
   },
   "accounts": [
     { "code": "NUBANK_GLOBAL", "name": "Nubank Ultravioleta (Conta Global)", "spread": 0.0, "iof": 0.035 },
