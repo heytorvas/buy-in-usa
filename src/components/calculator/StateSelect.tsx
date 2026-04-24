@@ -4,7 +4,12 @@ import statesRaw from "@/data/usa_state_tax.json";
 export interface UsState {
   code: string;
   name: string;
-  tax: number;
+  /** State-only sales tax rate (decimal, e.g. 0.06). */
+  stateTax: number;
+  /** Average local sales tax rate (decimal). */
+  avgLocalTax: number;
+  /** State + average local (decimal) — used in the calculator. */
+  combinedTax: number;
 }
 
 export interface StateTaxMeta {
@@ -12,16 +17,20 @@ export interface StateTaxMeta {
   updated_at: string;
 }
 
+interface StateRecord {
+  state: string;
+  avg_local: string;
+  combined: string;
+}
+
 interface StateTaxFile {
-  states: Record<string, string>;
+  states: Record<string, StateRecord>;
   last_update: string;
   updated_at: string;
 }
 
 const file = statesRaw as StateTaxFile;
 
-// Build a stable list of states with codes derived from name initials.
-// Uses well-known 2-letter postal codes for ordering/keying.
 const POSTAL_CODES: Record<string, string> = {
   Alabama: "AL", Alaska: "AK", Arizona: "AZ", Arkansas: "AR",
   California: "CA", Colorado: "CO", Connecticut: "CT", Delaware: "DE",
@@ -38,11 +47,19 @@ const POSTAL_CODES: Record<string, string> = {
   Wisconsin: "WI", Wyoming: "WY", "District of Columbia": "DC",
 };
 
+function pct(s: string | undefined): number {
+  if (!s) return 0;
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n / 100 : 0;
+}
+
 const states: UsState[] = Object.entries(file.states)
-  .map(([name, pct]) => ({
+  .map(([name, record]) => ({
     code: POSTAL_CODES[name] ?? name.slice(0, 2).toUpperCase(),
     name,
-    tax: parseFloat(pct) / 100,
+    stateTax: pct(record.state),
+    avgLocalTax: pct(record.avg_local),
+    combinedTax: pct(record.combined),
   }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
