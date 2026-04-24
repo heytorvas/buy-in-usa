@@ -1,6 +1,6 @@
 import { CalculationResult, formatBRL, formatUSD, formatPercent, type PaymentMethod } from "@/lib/calculator";
 import type { PtaxResult } from "@/lib/ptax";
-import type { StateTaxMeta } from "./StateSelect";
+import type { StateTaxMeta, UsState } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
@@ -12,7 +12,7 @@ interface BanksMeta {
 interface ResultCardProps {
   result: CalculationResult;
   priceUSD: number;
-  stateTaxRate: number;
+  stateInfo: UsState;
   spreadRate: number;
   institutionLabel: string;
   method: PaymentMethod;
@@ -38,7 +38,7 @@ const METHOD_LABEL: Record<PaymentMethod, string> = {
 export function ResultCard({
   result,
   priceUSD,
-  stateTaxRate,
+  stateInfo,
   spreadRate,
   institutionLabel,
   method,
@@ -52,6 +52,12 @@ export function ResultCard({
   const productPct = totalForChart > 0 ? audit.basePriceBRL / totalForChart : 0;
   const taxesPct = 1 - productPct;
   const hasSpread = spreadRate > 0;
+
+  // Split combined US sales tax into state and local components for display.
+  const combinedTax = stateInfo.combinedTax;
+  const stateShare = combinedTax > 0 ? stateInfo.stateTax / combinedTax : 0;
+  const stateOnlyBRL = audit.stateTaxBRL * stateShare;
+  const localBRL = audit.stateTaxBRL - stateOnlyBRL;
 
   return (
     <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
