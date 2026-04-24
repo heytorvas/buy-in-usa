@@ -1,0 +1,26 @@
+# EUA x Brasil — Calculadora de Compras Internacionais
+
+> Calculadora gratuita, em português, que mostra o custo real (em reais) de uma compra feita nos Estados Unidos. Considera sales tax estadual + local média (Tax Foundation), cotação PTAX oficial do Banco Central do Brasil, IOF vigente em 2025 e o spread cambial de cada meio de pagamento (dinheiro, conta global internacional, cartão de crédito).
+
+## O que a ferramenta faz
+
+- Converte preço em USD para BRL aplicando PTAX do dia (Olinda BCB).
+- Soma sales tax estadual + média local do estado escolhido (50 estados + DC).
+- Aplica IOF correto por meio de pagamento (3,5% padrão; 1,1% reduzido onde aplicável; 0% em cartões com IOF subsidiado).
+- Aplica spread cambial específico de cada banco/conta/casa de câmbio.
+- Compara três cenários: dinheiro (dólar turismo), conta internacional global, cartão de crédito internacional.
+
+## Fontes oficiais
+
+- PTAX: Banco Central do Brasil — Olinda API (atualizado diariamente)
+- Sales tax (estadual + local média): Tax Foundation (atualizado mensalmente)
+- IOF e spreads: regulamentação brasileira 2025 + ranking público de bancos/contas
+
+## Tecnologia
+
+- Aplicação 100% client-side, sem coleta de dados pessoais.
+- Dados de impostos e cotação são versionados no repositório e atualizados via GitHub Actions.
+
+## Páginas principais
+
+- /  — Calculadora interativa
