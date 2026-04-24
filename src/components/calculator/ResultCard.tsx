@@ -132,7 +132,12 @@ export function ResultCard({
               <dd>Imposto estadual aplicado no momento da compra nos Estados Unidos.</dd>
               {stateTaxMeta && (
                 <dd className="text-[11px] mt-1">
-                  Tabela oficial: <span className="capitalize">{stateTaxMeta.last_update}</span>
+                  Tabela oficial:{" "}
+                  {new Date(stateTaxMeta.last_update + "T00:00:00").toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
                   {" · "}atualizado em {stateTaxMeta.updated_at}
                 </dd>
               )}
