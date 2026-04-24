@@ -85,11 +85,25 @@ export function ResultCard({
               <span className="text-muted-foreground">Preço Base</span>
               <span className="font-bold tabular-nums">{formatBRL(audit.basePriceBRL)}</span>
             </li>
-            <li className="flex justify-between items-center pb-2 border-b border-input-bg">
-              <span className="text-muted-foreground flex items-center gap-2">
-                Taxa de Venda EUA <Pill>{formatPercent(stateTaxRate, 2)}</Pill>
-              </span>
-              <span className="font-bold tabular-nums">{formatBRL(audit.stateTaxBRL)}</span>
+            <li className="pb-2 border-b border-input-bg">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground flex items-center gap-2">
+                  Taxa de Venda EUA <Pill>{formatPercent(combinedTax, 2)}</Pill>
+                </span>
+                <span className="font-bold tabular-nums">{formatBRL(audit.stateTaxBRL)}</span>
+              </div>
+              {stateInfo.avgLocalTax > 0 && (
+                <div className="mt-1.5 ml-3 pl-3 border-l-2 border-input-bg space-y-0.5 text-xs text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>Estadual <span className="opacity-70">({formatPercent(stateInfo.stateTax, 2)})</span></span>
+                    <span className="tabular-nums">{formatBRL(stateOnlyBRL)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Local média <span className="opacity-70">({formatPercent(stateInfo.avgLocalTax, 2)})</span></span>
+                    <span className="tabular-nums">{formatBRL(localBRL)}</span>
+                  </div>
+                </div>
+              )}
             </li>
             <li className="flex justify-between items-center pb-2 border-b border-input-bg">
               <span className="text-muted-foreground flex items-center gap-2">
