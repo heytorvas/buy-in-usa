@@ -1,33 +1,48 @@
 import { describe, it, expect } from "vitest";
-import { calculate, IOF_CASH, IOF_CREDIT } from "@/lib/calculator";
+import { calculate, DEFAULT_IOF } from "@/lib/calculator";
 
 describe("calculator engine", () => {
-  it("computes cash payment with state tax and IOF 1.1%", () => {
+  it("computes cash payment with state tax and IOF 3.5%", () => {
     const r = calculate({
       priceUSD: 100,
       stateTax: 0.06,
       ptax: 5,
       paymentMethod: "cash",
-      bankSpread: 0,
+      spread: 0,
+      iofRate: DEFAULT_IOF.cash,
     });
-    // subtotalUSD = 106 ; subtotalBRL = 530 ; iof = 5.83 ; final = 535.83
+    // subtotalUSD = 106 ; subtotalBRL = 530 ; iof = 18.55 ; final = 548.55
     expect(r.audit.subtotalUSD).toBeCloseTo(106, 5);
-    expect(r.audit.iofRate).toBe(IOF_CASH);
-    expect(r.finalBRL).toBeCloseTo(535.83, 2);
+    expect(r.audit.iofRate).toBe(0.035);
+    expect(r.finalBRL).toBeCloseTo(548.55, 2);
   });
 
-  it("computes credit card with spread and IOF 3.5%", () => {
+  it("computes credit card with spread and IOF from institution", () => {
     const r = calculate({
       priceUSD: 100,
       stateTax: 0.06,
       ptax: 5,
       paymentMethod: "credit",
-      bankSpread: 0.05,
+      spread: 0.05,
+      iofRate: 0.035,
     });
     // conversionRate = 5.25 ; subtotalBRL = 106 * 5.25 = 556.5
     // iof = 19.4775 ; final = 575.9775
-    expect(r.audit.iofRate).toBe(IOF_CREDIT);
     expect(r.finalBRL).toBeCloseTo(575.9775, 3);
+  });
+
+  it("supports zero IOF (e.g. AstroPay subsidized)", () => {
+    const r = calculate({
+      priceUSD: 100,
+      stateTax: 0,
+      ptax: 5,
+      paymentMethod: "global",
+      spread: 0.015,
+      iofRate: 0,
+    });
+    // subtotalBRL = 100 * 5 * 1.015 = 507.5 ; iof = 0
+    expect(r.finalBRL).toBeCloseTo(507.5, 2);
+    expect(r.audit.iofBRL).toBe(0);
   });
 
   it("returns zero on invalid price", () => {
@@ -36,7 +51,8 @@ describe("calculator engine", () => {
       stateTax: 0.06,
       ptax: 5,
       paymentMethod: "cash",
-      bankSpread: 0,
+      spread: 0,
+      iofRate: 0.035,
     });
     expect(r.finalBRL).toBe(0);
   });

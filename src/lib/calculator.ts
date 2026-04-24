@@ -4,8 +4,8 @@
  *
  * Flow:
  *   A) US Subtotal: priceUSD * (1 + stateTax)
- *   B) Convert to BRL using PTAX (or PTAX * (1 + spread) for credit cards)
- *   C) Apply IOF (1.1% cash/global account, 3.5% credit card)
+ *   B) Convert to BRL using PTAX * (1 + spread)   (spread = 0 for cash)
+ *   C) Apply IOF (rate depends on payment method / institution)
  */
 
 export type PaymentMethod = "cash" | "global" | "credit";
@@ -15,15 +15,16 @@ export interface CalculatorInput {
   stateTax: number;        // e.g. 0.06
   ptax: number;            // BRL per USD (official)
   paymentMethod: PaymentMethod;
-  bankSpread: number;      // e.g. 0.05 — only applied on credit card
+  spread: number;          // institution-specific spread (0 for cash)
+  iofRate: number;         // institution-specific IOF (0..0.035)
 }
 
 export interface AuditTrail {
   basePriceBRL: number;        // price converted at PTAX (no fees, no state tax)
   stateTaxBRL: number;         // BRL amount of US state tax
-  spreadBRL: number;           // BRL amount of bank spread (credit only)
+  spreadBRL: number;           // BRL amount of spread
   iofBRL: number;              // BRL amount of IOF
-  iofRate: number;             // e.g. 0.011 or 0.035
+  iofRate: number;             // applied IOF rate
   effectiveExchangeRate: number; // BRL per USD effectively paid
   subtotalUSD: number;         // priceUSD * (1 + stateTax)
 }
@@ -33,26 +34,27 @@ export interface CalculationResult {
   audit: AuditTrail;
 }
 
-export const IOF_CASH = 0.011;
-export const IOF_CREDIT = 0.035;
+// Default IOF rates by payment method when no institution is selected.
+// Source: melhoresdestinos.com.br (Dec 2025) — IOF padronizado em 3,5%
+// para cartão de crédito, contas globais e câmbio em espécie.
+export const DEFAULT_IOF: Record<PaymentMethod, number> = {
+  cash: 0.035,
+  global: 0.035,
+  credit: 0.035,
+};
 
 export function calculate(input: CalculatorInput): CalculationResult {
-  const { priceUSD, stateTax, ptax, paymentMethod, bankSpread } = input;
+  const { priceUSD, stateTax, ptax, spread, iofRate } = input;
 
   const safePrice = Number.isFinite(priceUSD) && priceUSD > 0 ? priceUSD : 0;
 
   // Step A — US subtotal in USD
   const subtotalUSD = safePrice * (1 + stateTax);
 
-  // Step B — Choose conversion rate
-  const isCredit = paymentMethod === "credit";
-  const spread = isCredit ? bankSpread : 0;
+  // Step B — Conversion rate including spread
   const conversionRate = ptax * (1 + spread);
 
-  // Step C — Apply IOF
-  const iofRate = isCredit ? IOF_CREDIT : IOF_CASH;
-
-  // Convert and apply IOF on the converted BRL value
+  // Step C — Convert and apply IOF
   const subtotalBRL = subtotalUSD * conversionRate;
   const iofBRL = subtotalBRL * iofRate;
   const finalBRL = subtotalBRL + iofBRL;
@@ -60,7 +62,7 @@ export function calculate(input: CalculatorInput): CalculationResult {
   // Audit breakdown — split BRL components
   const basePriceBRL = safePrice * ptax;
   const stateTaxBRL = safePrice * stateTax * ptax;
-  const spreadBRL = subtotalUSD * ptax * spread; // BRL contribution of spread
+  const spreadBRL = subtotalUSD * ptax * spread;
   const effectiveExchangeRate = safePrice > 0 ? finalBRL / safePrice : 0;
 
   return {
