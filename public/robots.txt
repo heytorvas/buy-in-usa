@@ -86,4 +86,4 @@ Allow: /
 User-agent: MistralAI-User
 Allow: /
 
-Sitemap: /sitemap.xml
+Sitemap: https://dolar.heytor.dev/sitemap.xml

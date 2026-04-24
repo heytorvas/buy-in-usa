@@ -1,5 +1,7 @@
 # EUA x Brasil — Calculadora de Compras Internacionais
 
+URL: https://dolar.heytor.dev/
+
 > Calculadora gratuita, em português, que mostra o custo real (em reais) de uma compra feita nos Estados Unidos. Considera sales tax estadual + local média (Tax Foundation), cotação PTAX oficial do Banco Central do Brasil, IOF vigente em 2025 e o spread cambial de cada meio de pagamento (dinheiro, conta global internacional, cartão de crédito).
 
 ## O que a ferramenta faz
