@@ -1,6 +1,6 @@
 import { CalculationResult, formatBRL, formatUSD, formatPercent, type PaymentMethod } from "@/lib/calculator";
 import type { PtaxResult } from "@/lib/ptax";
-import type { StateTaxMeta } from "./StateSelect";
+import type { StateTaxMeta, UsState } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
@@ -12,7 +12,7 @@ interface BanksMeta {
 interface ResultCardProps {
   result: CalculationResult;
   priceUSD: number;
-  stateTaxRate: number;
+  stateInfo: UsState;
   spreadRate: number;
   institutionLabel: string;
   method: PaymentMethod;
@@ -38,7 +38,7 @@ const METHOD_LABEL: Record<PaymentMethod, string> = {
 export function ResultCard({
   result,
   priceUSD,
-  stateTaxRate,
+  stateInfo,
   spreadRate,
   institutionLabel,
   method,
@@ -52,6 +52,12 @@ export function ResultCard({
   const productPct = totalForChart > 0 ? audit.basePriceBRL / totalForChart : 0;
   const taxesPct = 1 - productPct;
   const hasSpread = spreadRate > 0;
+
+  // Split combined US sales tax into state and local components for display.
+  const combinedTax = stateInfo.combinedTax;
+  const stateShare = combinedTax > 0 ? stateInfo.stateTax / combinedTax : 0;
+  const stateOnlyBRL = audit.stateTaxBRL * stateShare;
+  const localBRL = audit.stateTaxBRL - stateOnlyBRL;
 
   return (
     <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
@@ -79,11 +85,25 @@ export function ResultCard({
               <span className="text-muted-foreground">Preço Base</span>
               <span className="font-bold tabular-nums">{formatBRL(audit.basePriceBRL)}</span>
             </li>
-            <li className="flex justify-between items-center pb-2 border-b border-input-bg">
-              <span className="text-muted-foreground flex items-center gap-2">
-                Taxa de Venda EUA <Pill>{formatPercent(stateTaxRate, 2)}</Pill>
-              </span>
-              <span className="font-bold tabular-nums">{formatBRL(audit.stateTaxBRL)}</span>
+            <li className="pb-2 border-b border-input-bg">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground flex items-center gap-2">
+                  Taxa de Venda EUA <Pill>{formatPercent(combinedTax, 2)}</Pill>
+                </span>
+                <span className="font-bold tabular-nums">{formatBRL(audit.stateTaxBRL)}</span>
+              </div>
+              {stateInfo.avgLocalTax > 0 && (
+                <div className="mt-1.5 ml-3 pl-3 border-l-2 border-input-bg space-y-0.5 text-xs text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>Estadual <span className="opacity-70">({formatPercent(stateInfo.stateTax, 2)})</span></span>
+                    <span className="tabular-nums">{formatBRL(stateOnlyBRL)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Local média <span className="opacity-70">({formatPercent(stateInfo.avgLocalTax, 2)})</span></span>
+                    <span className="tabular-nums">{formatBRL(localBRL)}</span>
+                  </div>
+                </div>
+              )}
             </li>
             <li className="flex justify-between items-center pb-2 border-b border-input-bg">
               <span className="text-muted-foreground flex items-center gap-2">
@@ -129,7 +149,12 @@ export function ResultCard({
           <dl className="text-xs text-muted-foreground space-y-2 leading-relaxed">
             <div>
               <dt className="font-semibold text-foreground">Taxa de Venda (EUA)</dt>
-              <dd>Imposto estadual aplicado no momento da compra nos Estados Unidos.</dd>
+              <dd>
+                Soma da alíquota estadual com a média municipal/condado
+                (Avg. Local Sales Tax). Em estados como Alasca, Delaware, Montana,
+                New Hampshire e Oregon não há imposto estadual, mas pode haver
+                taxa local.
+              </dd>
               {stateTaxMeta && (
                 <dd className="text-[11px] mt-1">
                   Tabela oficial:{" "}
@@ -169,7 +194,19 @@ export function ResultCard({
                 <dt className="font-semibold text-foreground">Cotação PTAX</dt>
                 <dd className="tabular-nums">
                   R$ {ptax.rate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} — {new Date(ptax.date + "T00:00:00").toLocaleDateString("pt-BR")}
-                  {ptax.fallback && " (cotação de referência)"}
+                </dd>
+                <dd className="text-[11px] mt-1">
+                  Fonte: BCB Olinda · sincronizado em {ptax.fetchedAt}
+                </dd>
+              </div>
+            )}
+            {method === "cash" && (
+              <div>
+                <dt className="font-semibold text-foreground">Dólar turismo</dt>
+                <dd>
+                  Compra em espécie usa o dólar turismo, estimado como PTAX +
+                  spread médio de casas de câmbio ({formatPercent(spreadRate, 2)}).
+                  O valor exato varia por casa de câmbio e cidade.
                 </dd>
               </div>
             )}

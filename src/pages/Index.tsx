@@ -1,11 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { PriceInput } from "@/components/calculator/PriceInput";
 import { StateSelect, states, stateTaxMeta } from "@/components/calculator/StateSelect";
-import { PaymentSection, accounts, banks, banksMeta } from "@/components/calculator/PaymentSection";
+import {
+  PaymentSection,
+  accounts,
+  banks,
+  banksMeta,
+  cashConfig,
+} from "@/components/calculator/PaymentSection";
 import { ResultCard } from "@/components/calculator/ResultCard";
 import { StepHeader } from "@/components/calculator/StepHeader";
-import { calculate, DEFAULT_IOF, type PaymentMethod } from "@/lib/calculator";
-import { fetchLatestPtax, type PtaxResult } from "@/lib/ptax";
+import { calculate, type PaymentMethod } from "@/lib/calculator";
+import { ptax } from "@/lib/ptax";
 
 const Index = () => {
   const [priceStr, setPriceStr] = useState("");
@@ -13,8 +19,6 @@ const Index = () => {
   const [method, setMethod] = useState<PaymentMethod>("cash");
   const [accountCode, setAccountCode] = useState(accounts[0].code);
   const [bankCode, setBankCode] = useState(banks[0].code);
-  const [ptax, setPtax] = useState<PtaxResult | undefined>();
-  const [loading, setLoading] = useState(true);
   const [hasCalculated, setHasCalculated] = useState(false);
 
   // Reset calculated result whenever any input changes — user must
@@ -22,16 +26,6 @@ const Index = () => {
   useEffect(() => {
     setHasCalculated(false);
   }, [priceStr, stateCode, method, bankCode, accountCode]);
-
-  useEffect(() => {
-    let alive = true;
-    fetchLatestPtax()
-      .then((r) => alive && setPtax(r))
-      .finally(() => alive && setLoading(false));
-    return () => {
-      alive = false;
-    };
-  }, []);
 
   const stateInfo = useMemo(
     () => states.find((s) => s.code === stateCode) ?? states[0],
@@ -56,21 +50,20 @@ const Index = () => {
     if (method === "global") {
       return { spread: accountInfo.spread, iofRate: accountInfo.iof, institutionLabel: accountInfo.name };
     }
-    // cash — no spread, default IOF
-    return { spread: 0, iofRate: DEFAULT_IOF.cash, institutionLabel: "Casa de câmbio / espécie" };
+    // cash — apply tourism dollar spread on top of PTAX, with reduced IOF.
+    return { spread: cashConfig.spread, iofRate: cashConfig.iof, institutionLabel: cashConfig.name };
   }, [method, bankInfo, accountInfo]);
 
   const result = useMemo(() => {
-    if (!ptax) return null;
     return calculate({
       priceUSD,
-      stateTax: stateInfo.tax,
+      stateTax: stateInfo.combinedTax, // state + average local
       ptax: ptax.rate,
       paymentMethod: method,
       spread,
       iofRate,
     });
-  }, [priceUSD, stateInfo, ptax, method, spread, iofRate]);
+  }, [priceUSD, stateInfo, method, spread, iofRate]);
 
   const showResult = hasCalculated && result && priceUSD > 0;
 
@@ -123,10 +116,10 @@ const Index = () => {
           <button
             type="button"
             onClick={handleCalculate}
-            disabled={priceUSD <= 0 || !ptax}
+            disabled={priceUSD <= 0}
             className="w-full bg-primary hover:bg-primary-deep text-primary-foreground font-bold text-lg py-5 rounded-2xl shadow-warm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            {loading ? "Buscando cotação PTAX…" : "Calcular Total"}
+            Calcular Total
           </button>
 
           {showResult && result && (
@@ -135,7 +128,7 @@ const Index = () => {
               <ResultCard
                 result={result}
                 priceUSD={priceUSD}
-                stateTaxRate={stateInfo.tax}
+                stateInfo={stateInfo}
                 spreadRate={spread}
                 institutionLabel={institutionLabel}
                 method={method}

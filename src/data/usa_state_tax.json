@@ -1,57 +1,261 @@
 {
   "states": {
-    "Alabama": "4.00",
-    "Alaska": "0.00",
-    "Arizona": "5.60",
-    "Arkansas": "6.50",
-    "California": "7.25",
-    "Colorado": "2.90",
-    "Connecticut": "6.35",
-    "Delaware": "0.00",
-    "Florida": "6.00",
-    "Georgia": "4.00",
-    "Hawaii": "4.00",
-    "Idaho": "6.00",
-    "Illinois": "6.25",
-    "Indiana": "7.00",
-    "Iowa": "6.00",
-    "Kansas": "6.50",
-    "Kentucky": "6.00",
-    "Louisiana": "5.00",
-    "Maine": "5.50",
-    "Maryland": "6.00",
-    "Massachusetts": "6.25",
-    "Michigan": "6.00",
-    "Minnesota": "6.875",
-    "Mississippi": "7.00",
-    "Missouri": "4.225",
-    "Montana": "0.00",
-    "Nebraska": "5.50",
-    "Nevada": "6.85",
-    "New Hampshire": "0.00",
-    "New Jersey": "6.625",
-    "New Mexico": "4.875",
-    "New York": "4.00",
-    "North Carolina": "4.75",
-    "North Dakota": "5.00",
-    "Ohio": "5.75",
-    "Oklahoma": "4.50",
-    "Oregon": "0.00",
-    "Pennsylvania": "6.00",
-    "Rhode Island": "7.00",
-    "South Carolina": "6.00",
-    "South Dakota": "4.20",
-    "Tennessee": "7.00",
-    "Texas": "6.25",
-    "Utah": "6.10",
-    "Vermont": "6.00",
-    "Virginia": "5.30",
-    "Washington": "6.50",
-    "West Virginia": "6.00",
-    "Wisconsin": "5.00",
-    "Wyoming": "4.00",
-    "District of Columbia": "6.00"
+    "Alabama": {
+      "state": "4.00",
+      "avg_local": "5.46",
+      "combined": "9.46"
+    },
+    "Alaska": {
+      "state": "0.00",
+      "avg_local": "1.82",
+      "combined": "1.82"
+    },
+    "Arizona": {
+      "state": "5.60",
+      "avg_local": "2.92",
+      "combined": "8.52"
+    },
+    "Arkansas": {
+      "state": "6.50",
+      "avg_local": "2.96",
+      "combined": "9.46"
+    },
+    "California": {
+      "state": "7.25",
+      "avg_local": "1.74",
+      "combined": "8.99"
+    },
+    "Colorado": {
+      "state": "2.90",
+      "avg_local": "4.99",
+      "combined": "7.89"
+    },
+    "Connecticut": {
+      "state": "6.35",
+      "avg_local": "0.00",
+      "combined": "6.35"
+    },
+    "Delaware": {
+      "state": "0.00",
+      "avg_local": "0.00",
+      "combined": "0.00"
+    },
+    "Florida": {
+      "state": "6.00",
+      "avg_local": "0.98",
+      "combined": "6.98"
+    },
+    "Georgia": {
+      "state": "4.00",
+      "avg_local": "3.49",
+      "combined": "7.49"
+    },
+    "Hawaii": {
+      "state": "4.00",
+      "avg_local": "0.50",
+      "combined": "4.50"
+    },
+    "Idaho": {
+      "state": "6.00",
+      "avg_local": "0.03",
+      "combined": "6.03"
+    },
+    "Illinois": {
+      "state": "6.25",
+      "avg_local": "2.71",
+      "combined": "8.96"
+    },
+    "Indiana": {
+      "state": "7.00",
+      "avg_local": "0.00",
+      "combined": "7.00"
+    },
+    "Iowa": {
+      "state": "6.00",
+      "avg_local": "0.94",
+      "combined": "6.94"
+    },
+    "Kansas": {
+      "state": "6.50",
+      "avg_local": "2.19",
+      "combined": "8.69"
+    },
+    "Kentucky": {
+      "state": "6.00",
+      "avg_local": "0.00",
+      "combined": "6.00"
+    },
+    "Louisiana": {
+      "state": "5.00",
+      "avg_local": "5.11",
+      "combined": "10.11"
+    },
+    "Maine": {
+      "state": "5.50",
+      "avg_local": "0.00",
+      "combined": "5.50"
+    },
+    "Maryland": {
+      "state": "6.00",
+      "avg_local": "0.00",
+      "combined": "6.00"
+    },
+    "Massachusetts": {
+      "state": "6.25",
+      "avg_local": "0.00",
+      "combined": "6.25"
+    },
+    "Michigan": {
+      "state": "6.00",
+      "avg_local": "0.00",
+      "combined": "6.00"
+    },
+    "Minnesota": {
+      "state": "6.875",
+      "avg_local": "1.26",
+      "combined": "8.14"
+    },
+    "Mississippi": {
+      "state": "7.00",
+      "avg_local": "0.06",
+      "combined": "7.06"
+    },
+    "Missouri": {
+      "state": "4.225",
+      "avg_local": "4.22",
+      "combined": "8.44"
+    },
+    "Montana": {
+      "state": "0.00",
+      "avg_local": "0.00",
+      "combined": "0.00"
+    },
+    "Nebraska": {
+      "state": "5.50",
+      "avg_local": "1.48",
+      "combined": "6.98"
+    },
+    "Nevada": {
+      "state": "6.85",
+      "avg_local": "1.39",
+      "combined": "8.24"
+    },
+    "New Hampshire": {
+      "state": "0.00",
+      "avg_local": "0.00",
+      "combined": "0.00"
+    },
+    "New Jersey": {
+      "state": "6.625",
+      "avg_local": "-0.02",
+      "combined": "6.60"
+    },
+    "New Mexico": {
+      "state": "4.875",
+      "avg_local": "2.79",
+      "combined": "7.67"
+    },
+    "New York": {
+      "state": "4.00",
+      "avg_local": "4.54",
+      "combined": "8.54"
+    },
+    "North Carolina": {
+      "state": "4.75",
+      "avg_local": "2.25",
+      "combined": "7.00"
+    },
+    "North Dakota": {
+      "state": "5.00",
+      "avg_local": "2.09",
+      "combined": "7.09"
+    },
+    "Ohio": {
+      "state": "5.75",
+      "avg_local": "1.54",
+      "combined": "7.29"
+    },
+    "Oklahoma": {
+      "state": "4.50",
+      "avg_local": "4.56",
+      "combined": "9.06"
+    },
+    "Oregon": {
+      "state": "0.00",
+      "avg_local": "0.00",
+      "combined": "0.00"
+    },
+    "Pennsylvania": {
+      "state": "6.00",
+      "avg_local": "0.34",
+      "combined": "6.34"
+    },
+    "Rhode Island": {
+      "state": "7.00",
+      "avg_local": "0.00",
+      "combined": "7.00"
+    },
+    "South Carolina": {
+      "state": "6.00",
+      "avg_local": "1.49",
+      "combined": "7.49"
+    },
+    "South Dakota": {
+      "state": "4.20",
+      "avg_local": "1.91",
+      "combined": "6.11"
+    },
+    "Tennessee": {
+      "state": "7.00",
+      "avg_local": "2.61",
+      "combined": "9.61"
+    },
+    "Texas": {
+      "state": "6.25",
+      "avg_local": "1.95",
+      "combined": "8.20"
+    },
+    "Utah": {
+      "state": "6.10",
+      "avg_local": "1.32",
+      "combined": "7.42"
+    },
+    "Vermont": {
+      "state": "6.00",
+      "avg_local": "0.39",
+      "combined": "6.39"
+    },
+    "Virginia": {
+      "state": "5.30",
+      "avg_local": "0.47",
+      "combined": "5.77"
+    },
+    "Washington": {
+      "state": "6.50",
+      "avg_local": "3.01",
+      "combined": "9.51"
+    },
+    "West Virginia": {
+      "state": "6.00",
+      "avg_local": "0.59",
+      "combined": "6.59"
+    },
+    "Wisconsin": {
+      "state": "5.00",
+      "avg_local": "0.72",
+      "combined": "5.72"
+    },
+    "Wyoming": {
+      "state": "4.00",
+      "avg_local": "1.56",
+      "combined": "5.56"
+    },
+    "District of Columbia": {
+      "state": "6.00",
+      "avg_local": "0.00",
+      "combined": "6.00"
+    }
   },
   "last_update": "2026-01-01",
-  "updated_at": "2026-04-24 01:44:27"
+  "updated_at": "2026-04-24 02:03:26"
 }

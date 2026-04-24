@@ -3,13 +3,20 @@
  * Scrapes US state sales tax rates from taxfoundation.org and writes
  * src/data/usa_state_tax.json.
  *
- * Port of the original Python scraper (heytorvas/buy-in-usa-v2) to the
- * Node/TypeScript stack used by this project. Run on a monthly schedule by
- * .github/workflows/scrape-state-tax.yml.
+ * Captures three values per state from the first table:
+ *   - state         (state-level rate, e.g. "6.00")
+ *   - avg_local     (average local rate, e.g. "1.02")
+ *   - combined      (state + avg local, e.g. "7.02")
+ *
+ * All values are stored as strings (percentage points without the % sign)
+ * to mirror the original data format and let the UI control rounding.
  *
  * Output shape:
  * {
- *   "states": { "Alabama": "4.00", ... },
+ *   "states": {
+ *     "Florida": { "state": "6.00", "avg_local": "1.02", "combined": "7.02" },
+ *     ...
+ *   },
  *   "last_update": "2026-01-01",         // ISO date of the source table
  *   "updated_at":  "2026-04-21 18:53:10" // when the scraper ran (UTC)
  * }
@@ -36,10 +43,11 @@ const MONTHS = {
 };
 
 function cleanStateName(name) {
+  // Strip footnote markers like "California (a)"
   return name.replace(/\s*\([^)]*\)/g, "").trim();
 }
 
-function cleanTaxRate(rate) {
+function cleanRate(rate) {
   return rate.replace("%", "").trim();
 }
 
@@ -67,27 +75,47 @@ function parseLastUpdate($) {
   return `${yearStr}-${mm}-${dd}`;
 }
 
+function findColumnIndex(headers, ...keywords) {
+  return headers.findIndex((h) => keywords.every((k) => h.toLowerCase().includes(k)));
+}
+
 function parseTable($) {
   const table = $("table").first();
   if (!table.length) throw new Error("Table not found in HTML.");
 
   const rows = table.find("tr").toArray();
-  const headerCells = $(rows[0]).find("th, td").toArray()
-    .map((c) => $(c).text().trim().toLowerCase());
+  const headerCells = $(rows[0])
+    .find("th, td")
+    .toArray()
+    .map((c) => $(c).text().trim());
 
-  let stateIdx = headerCells.findIndex((h) => h.includes("state") && !h.includes("rate"));
-  let rateIdx = headerCells.findIndex((h) => h.includes("rate"));
-  if (stateIdx === -1) stateIdx = 0;
-  if (rateIdx === -1) rateIdx = 1;
+  const stateIdx = findColumnIndex(headerCells, "state") >= 0 ? 0 : 0;
+  const stateRateIdx = findColumnIndex(headerCells, "state", "rate");
+  const avgLocalIdx = findColumnIndex(headerCells, "avg", "local");
+  const combinedIdx = findColumnIndex(headerCells, "combined") >= 0
+    ? headerCells.findIndex((h) => /combined/i.test(h) && /rate/i.test(h))
+    : -1;
+
+  if (stateRateIdx === -1 || avgLocalIdx === -1 || combinedIdx === -1) {
+    throw new Error(
+      `Expected columns not found. Headers: ${JSON.stringify(headerCells)}`,
+    );
+  }
 
   const result = {};
   for (const row of rows.slice(1)) {
     const cols = $(row).find("td, th").toArray();
-    if (cols.length <= Math.max(stateIdx, rateIdx)) continue;
+    if (cols.length <= Math.max(stateRateIdx, avgLocalIdx, combinedIdx)) continue;
     const state = cleanStateName($(cols[stateIdx]).text().trim());
-    const rate = cleanTaxRate($(cols[rateIdx]).text().trim());
-    if (state && rate && state.toLowerCase() !== "state") {
-      result[state] = rate;
+    const stateRate = cleanRate($(cols[stateRateIdx]).text().trim());
+    const avgLocal = cleanRate($(cols[avgLocalIdx]).text().trim());
+    const combined = cleanRate($(cols[combinedIdx]).text().trim());
+    if (state && stateRate && state.toLowerCase() !== "state") {
+      result[state] = {
+        state: stateRate,
+        avg_local: avgLocal,
+        combined: combined,
+      };
     }
   }
   return result;
