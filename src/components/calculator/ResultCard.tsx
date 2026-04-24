@@ -1,17 +1,24 @@
-import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
+import { CalculationResult, formatBRL, formatUSD, formatPercent, type PaymentMethod } from "@/lib/calculator";
 import type { PtaxResult } from "@/lib/ptax";
 import type { StateTaxMeta } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
+
+interface BanksMeta {
+  source: string;
+  last_update: string;
+}
 
 interface ResultCardProps {
   result: CalculationResult;
   priceUSD: number;
   stateTaxRate: number;
   spreadRate: number;
-  isCredit: boolean;
+  institutionLabel: string;
+  method: PaymentMethod;
   ptax?: PtaxResult;
   stateTaxMeta?: StateTaxMeta;
+  banksMeta?: BanksMeta;
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
@@ -22,12 +29,29 @@ function Pill({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredit, ptax, stateTaxMeta }: ResultCardProps) {
+const METHOD_LABEL: Record<PaymentMethod, string> = {
+  cash: "Dinheiro / espécie",
+  global: "Conta internacional",
+  credit: "Cartão de crédito",
+};
+
+export function ResultCard({
+  result,
+  priceUSD,
+  stateTaxRate,
+  spreadRate,
+  institutionLabel,
+  method,
+  ptax,
+  stateTaxMeta,
+  banksMeta,
+}: ResultCardProps) {
   const { finalBRL, audit } = result;
   const taxesBRL = audit.stateTaxBRL + audit.spreadBRL + audit.iofBRL;
   const totalForChart = audit.basePriceBRL + taxesBRL;
   const productPct = totalForChart > 0 ? audit.basePriceBRL / totalForChart : 0;
   const taxesPct = 1 - productPct;
+  const hasSpread = spreadRate > 0;
 
   return (
     <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
@@ -40,8 +64,11 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
           {finalBRL.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </span>
       </div>
-      <span className="text-sm text-muted-foreground mb-8">
+      <span className="text-sm text-muted-foreground mb-1">
         ≈ {formatUSD(priceUSD)} USD (Custo Efetivo Total)
+      </span>
+      <span className="text-xs text-muted-foreground mb-8">
+        {METHOD_LABEL[method]} · {institutionLabel}
       </span>
 
       <div className="w-full border-t border-border pt-8 space-y-6">
@@ -60,15 +87,19 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
             </li>
             <li className="flex justify-between items-center pb-2 border-b border-input-bg">
               <span className="text-muted-foreground flex items-center gap-2">
-                IOF <Pill>{formatPercent(audit.iofRate, 1)}</Pill>
+                IOF <Pill>{formatPercent(audit.iofRate, 2)}</Pill>
               </span>
-              <span className="font-bold tabular-nums">{formatBRL(audit.iofBRL)}</span>
+              {audit.iofBRL > 0 ? (
+                <span className="font-bold tabular-nums">{formatBRL(audit.iofBRL)}</span>
+              ) : (
+                <span className="text-muted-foreground">—</span>
+              )}
             </li>
             <li className="flex justify-between items-center">
               <span className="text-muted-foreground flex items-center gap-2">
-                Spread Bancário <Pill>{formatPercent(isCredit ? spreadRate : 0, 1)}</Pill>
+                Spread <Pill>{formatPercent(spreadRate, 2)}</Pill>
               </span>
-              {isCredit && audit.spreadBRL > 0 ? (
+              {hasSpread ? (
                 <span className="font-bold tabular-nums">{formatBRL(audit.spreadBRL)}</span>
               ) : (
                 <span className="text-muted-foreground">—</span>
@@ -108,11 +139,19 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
             </div>
             <div>
               <dt className="font-semibold text-foreground">IOF</dt>
-              <dd>Imposto federal sobre operações internacionais — 1,1% para dinheiro/conta global, 3,5% para cartão de crédito.</dd>
+              <dd>
+                Imposto federal sobre operações internacionais. Desde 2025, padronizado em
+                3,5% para cartão de crédito, contas globais e câmbio em espécie. Algumas
+                instituições oferecem IOF reduzido ou subsidiado (ex.: Nubank Ultravioleta,
+                AstroPay, BTG).
+              </dd>
             </div>
             <div>
-              <dt className="font-semibold text-foreground">Spread Bancário</dt>
-              <dd>Margem cobrada pelo banco brasileiro sobre o câmbio oficial (PTAX). Aplicado apenas em compras no cartão.</dd>
+              <dt className="font-semibold text-foreground">Spread</dt>
+              <dd>
+                Margem cobrada pela instituição sobre o câmbio oficial (PTAX). Varia conforme
+                conta global ou cartão escolhido.
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-foreground">Câmbio Efetivo</dt>
@@ -126,6 +165,14 @@ export function ResultCard({ result, priceUSD, stateTaxRate, spreadRate, isCredi
                 <dd className="tabular-nums">
                   R$ {ptax.rate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} — {new Date(ptax.date + "T00:00:00").toLocaleDateString("pt-BR")}
                   {ptax.fallback && " (cotação de referência)"}
+                </dd>
+              </div>
+            )}
+            {banksMeta && (
+              <div>
+                <dt className="font-semibold text-foreground">Spread &amp; IOF por instituição</dt>
+                <dd className="text-[11px]">
+                  Fonte: melhoresdestinos.com.br · atualizado em {banksMeta.last_update}
                 </dd>
               </div>
             )}
