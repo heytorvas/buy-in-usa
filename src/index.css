@@ -79,26 +79,6 @@
   .shadow-warm {
     box-shadow: var(--shadow-warm);
   }
-
-  /* Accessibility: skip link visible only on focus */
-  .skip-link {
-    position: absolute;
-    top: -40px;
-    left: 0.5rem;
-    z-index: 100;
-    padding: 0.5rem 1rem;
-    background: hsl(var(--primary));
-    color: hsl(var(--primary-foreground));
-    border-radius: 0.5rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: top 0.2s ease;
-  }
-  .skip-link:focus {
-    top: 0.5rem;
-    outline: 2px solid hsl(var(--foreground));
-    outline-offset: 2px;
-  }
 }
 
 /* Respect users who prefer reduced motion */
