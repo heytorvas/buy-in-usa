@@ -12,6 +12,7 @@ export interface Institution {
 interface BanksFile {
   source: string;
   last_update: string;
+  cash: Institution & { note?: string };
   accounts: Institution[];
   banks: Institution[];
 }
@@ -19,6 +20,7 @@ interface BanksFile {
 const data = banksRaw as BanksFile;
 const accounts = data.accounts;
 const banks = data.banks;
+const cashConfig = data.cash;
 const banksMeta = { source: data.source, last_update: data.last_update };
 
 interface PaymentSectionProps {
@@ -131,4 +133,4 @@ export function PaymentSection({
   );
 }
 
-export { accounts, banks, banksMeta };
+export { accounts, banks, banksMeta, cashConfig };
