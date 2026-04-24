@@ -2,19 +2,99 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-    <title>EUA x Brasil: Calculadora de Compras Internacionais</title>
-    <meta name="description" content="Compare o custo real de compras nos EUA em reais: dinheiro, conta internacional e cartão de crédito. Inclui IOF, spread e PTAX oficial." />
-    <meta property="og:title" content="EUA x Brasil: Calculadora de Compras" />
-    <meta property="og:description" content="Compare o custo real de compras nos EUA em reais com IOF, spread e PTAX oficial." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover" />
+    <meta name="theme-color" content="#E85D3A" />
+    <meta name="color-scheme" content="light" />
+
+    <title>EUA x Brasil: Calculadora de Compras Internacionais em Reais</title>
+    <meta name="description" content="Calcule grátis o custo real em reais de compras nos EUA. Compara dinheiro, conta internacional e cartão de crédito com IOF 2025, spread bancário e PTAX oficial do Banco Central." />
+    <meta name="keywords" content="calculadora compras EUA, dólar para real, IOF cartão internacional, PTAX, conta global, dólar turismo, sales tax EUA, compras internacionais Brasil" />
+    <meta name="author" content="EUA x Brasil Calculadora" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href="/" />
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="EUA x Brasil Calculadora" />
+    <meta property="og:title" content="EUA x Brasil: Calculadora de Compras Internacionais" />
+    <meta property="og:description" content="Compare o custo real em reais de compras nos EUA: dinheiro, conta internacional e cartão de crédito. Inclui IOF 2025, spread e PTAX oficial." />
+    <meta property="og:image" content="/favicon.png" />
+    <meta property="og:image:alt" content="EUA x Brasil Calculadora — converta compras em dólar para reais" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="EUA x Brasil: Calculadora de Compras Internacionais" />
+    <meta name="twitter:description" content="Compare o custo real em reais de compras nos EUA com IOF, spread e PTAX oficial." />
+    <meta name="twitter:image" content="/favicon.png" />
+
     <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Structured data: WebApplication + FAQ for rich results & LLM grounding -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "EUA x Brasil — Calculadora de Compras Internacionais",
+          "url": "/",
+          "applicationCategory": "FinanceApplication",
+          "operatingSystem": "Any",
+          "inLanguage": "pt-BR",
+          "isAccessibleForFree": true,
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+          "description": "Calculadora gratuita que mostra o custo real em reais de compras feitas nos EUA, considerando sales tax estadual + local, IOF 2025, spread bancário e PTAX do Banco Central.",
+          "featureList": [
+            "Conversão USD → BRL com PTAX oficial do Banco Central",
+            "Sales tax estadual + média local dos 50 estados + DC (Tax Foundation)",
+            "IOF 2025 por meio de pagamento (3,5% padrão, 1,1% reduzido, 0% subsidiado)",
+            "Spread cambial específico de bancos, contas globais e casas de câmbio",
+            "Comparação entre dinheiro, conta internacional e cartão de crédito"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Qual o IOF para compras internacionais no cartão de crédito em 2025?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O IOF padrão para cartão de crédito internacional e contas globais é 3,5%. Alguns cartões com IOF subsidiado cobram 0% e produtos específicos podem ter alíquota reduzida de 1,1%."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Qual é o melhor meio de pagamento para comprar nos EUA?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Depende do spread do banco e do IOF aplicado. A calculadora compara os três principais cenários — dinheiro (dólar turismo), conta internacional e cartão de crédito — para mostrar o custo final em reais."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "De onde vêm as cotações usadas na calculadora?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A cotação PTAX é obtida diariamente da API Olinda do Banco Central do Brasil. As alíquotas de sales tax dos estados americanos são extraídas mensalmente da Tax Foundation."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
 
   <body>
+    <a href="#conteudo-principal" class="skip-link">Pular para o conteúdo</a>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

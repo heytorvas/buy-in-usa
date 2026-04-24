@@ -80,15 +80,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <main className="flex-grow w-full max-w-2xl mx-auto px-6 py-8 pb-12">
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight">
+      <main
+        id="conteudo-principal"
+        className="flex-grow w-full max-w-2xl mx-auto px-6 py-8 pb-12"
+        aria-labelledby="titulo-calculadora"
+      >
+        <header className="mb-10 text-center">
+          <h1
+            id="titulo-calculadora"
+            className="text-3xl md:text-4xl font-bold text-foreground mb-3 leading-tight"
+          >
             EUA x Brasil:<br className="md:hidden" /> Calculadora de Compras
           </h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
             Compare o custo real entre pagamento em dinheiro, conta internacional e cartão de crédito internacional.
           </p>
-        </div>
+        </header>
 
         <div className="flex flex-col gap-8">
           <section className="flex flex-col gap-4">
