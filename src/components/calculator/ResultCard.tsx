@@ -149,7 +149,12 @@ export function ResultCard({
           <dl className="text-xs text-muted-foreground space-y-2 leading-relaxed">
             <div>
               <dt className="font-semibold text-foreground">Taxa de Venda (EUA)</dt>
-              <dd>Imposto estadual aplicado no momento da compra nos Estados Unidos.</dd>
+              <dd>
+                Soma da alíquota estadual com a média municipal/condado
+                (Avg. Local Sales Tax). Em estados como Alasca, Delaware, Montana,
+                New Hampshire e Oregon não há imposto estadual, mas pode haver
+                taxa local.
+              </dd>
               {stateTaxMeta && (
                 <dd className="text-[11px] mt-1">
                   Tabela oficial:{" "}
@@ -189,7 +194,19 @@ export function ResultCard({
                 <dt className="font-semibold text-foreground">Cotação PTAX</dt>
                 <dd className="tabular-nums">
                   R$ {ptax.rate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} — {new Date(ptax.date + "T00:00:00").toLocaleDateString("pt-BR")}
-                  {ptax.fallback && " (cotação de referência)"}
+                </dd>
+                <dd className="text-[11px] mt-1">
+                  Fonte: BCB Olinda · sincronizado em {ptax.fetchedAt}
+                </dd>
+              </div>
+            )}
+            {method === "cash" && (
+              <div>
+                <dt className="font-semibold text-foreground">Dólar turismo</dt>
+                <dd>
+                  Compra em espécie usa o dólar turismo, estimado como PTAX +
+                  spread médio de casas de câmbio ({formatPercent(spreadRate, 2)}).
+                  O valor exato varia por casa de câmbio e cidade.
                 </dd>
               </div>
             )}
