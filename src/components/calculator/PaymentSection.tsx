@@ -93,11 +93,14 @@ export function PaymentSection({
               onChange={(e) => onAccountChange(e.target.value)}
               className="w-full bg-input-bg border-none rounded-xl p-4 pr-12 text-foreground focus:outline-none focus:ring-2 focus:ring-secondary appearance-none font-medium cursor-pointer"
             >
-              {accounts.map((a) => (
-                <option key={a.code} value={a.code}>
-                  {a.name}
-                </option>
-              ))}
+              {accounts
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+                .map((a) => (
+                  <option key={a.code} value={a.code}>
+                    {a.name}
+                  </option>
+                ))}
             </select>
             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" aria-hidden />
           </div>
@@ -119,11 +122,14 @@ export function PaymentSection({
               onChange={(e) => onBankChange(e.target.value)}
               className="w-full bg-input-bg border-none rounded-xl p-4 pr-12 text-foreground focus:outline-none focus:ring-2 focus:ring-secondary appearance-none font-medium cursor-pointer"
             >
-              {banks.map((b) => (
-                <option key={b.code} value={b.code}>
-                  {b.name}
-                </option>
-              ))}
+              {banks
+                .slice()
+                .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"))
+                .map((b) => (
+                  <option key={b.code} value={b.code}>
+                    {b.name}
+                  </option>
+                ))}
             </select>
             <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" aria-hidden />
           </div>
