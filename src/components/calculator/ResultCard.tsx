@@ -189,9 +189,24 @@ export function ResultCard({
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-foreground">Câmbio Efetivo</dt>
+              <dt className="font-semibold text-foreground">VET — Câmbio da moeda</dt>
+              <dd className="tabular-nums">
+                R$ {vetPerUSD.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} por US$ 1,00
+              </dd>
+              <dd className="text-[11px] mt-1">
+                Valor Efetivo de Turismo: PTAX + spread + IOF. É o custo real
+                por dólar de moeda, comparável ao VET exibido por casas de
+                câmbio e cartões.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-foreground">Custo efetivo por dólar de produto</dt>
               <dd className="tabular-nums">
                 R$ {audit.effectiveExchangeRate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} por US$ 1,00
+              </dd>
+              <dd className="text-[11px] mt-1">
+                Inclui também a taxa de venda do estado americano diluída no
+                preço. Útil para comparar o custo total da compra, não só do câmbio.
               </dd>
             </div>
             {ptax && (
