@@ -104,7 +104,7 @@ export function ResultCard({
                     <span className="tabular-nums">{formatBRL(stateOnlyBRL)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Local média <span className="opacity-70">({formatPercent(stateInfo.avgLocalTax, 2)})</span></span>
+                    <span>Média Municipal <span className="opacity-70">({formatPercent(stateInfo.avgLocalTax, 2)})</span></span>
                     <span className="tabular-nums">{formatBRL(localBRL)}</span>
                   </div>
                 </div>
