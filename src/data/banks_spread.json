@@ -4,7 +4,7 @@
   "cash": {
     "code": "CASH",
     "name": "Casa de câmbio (dólar turismo)",
-    "spread": 0.05,
+    "spread": 0.035,
     "iof": 0.035,
     "note": "Spread médio aplicado por casas de câmbio sobre o PTAX (≈ 4-6%). IOF de 3,5% para câmbio em espécie (compra de moeda) conforme regra vigente em 2025."
   },
