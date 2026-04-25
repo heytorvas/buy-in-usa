@@ -59,6 +59,11 @@ export function ResultCard({
   const stateOnlyBRL = audit.stateTaxBRL * stateShare;
   const localBRL = audit.stateTaxBRL - stateOnlyBRL;
 
+  // VET (Valor Efetivo de Turismo) — custo real por dólar de moeda,
+  // sem incluir a taxa de venda americana (que é custo do produto, não do câmbio).
+  // Fórmula: PTAX × (1 + spread) × (1 + IOF)
+  const vetPerUSD = ptax ? ptax.rate * (1 + spreadRate) * (1 + audit.iofRate) : 0;
+
   return (
     <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
       <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">
@@ -184,9 +189,24 @@ export function ResultCard({
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-foreground">Câmbio Efetivo</dt>
+              <dt className="font-semibold text-foreground">VET — Câmbio da moeda</dt>
+              <dd className="tabular-nums">
+                R$ {vetPerUSD.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} por US$ 1,00
+              </dd>
+              <dd className="text-[11px] mt-1">
+                Valor Efetivo de Turismo: PTAX + spread + IOF. É o custo real
+                por dólar de moeda, comparável ao VET exibido por casas de
+                câmbio e cartões.
+              </dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-foreground">Custo efetivo por dólar de produto</dt>
               <dd className="tabular-nums">
                 R$ {audit.effectiveExchangeRate.toLocaleString("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 })} por US$ 1,00
+              </dd>
+              <dd className="text-[11px] mt-1">
+                Inclui também a taxa de venda do estado americano diluída no
+                preço. Útil para comparar o custo total da compra, não só do câmbio.
               </dd>
             </div>
             {ptax && (
