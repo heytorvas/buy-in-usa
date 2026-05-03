@@ -24,17 +24,9 @@ const Index = () => {
 
   // Compare mode state
   const [compareMode, setCompareMode] = useState(false);
-  const [selectedMethods, setSelectedMethods] = useState<PaymentMethod[]>([
-    "cash",
-    "global",
-    "credit",
-  ]);
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
-    accounts.map((a) => a.code),
-  );
-  const [selectedBanks, setSelectedBanks] = useState<string[]>(
-    banks.map((b) => b.code),
-  );
+  const [selectedMethods, setSelectedMethods] = useState<PaymentMethod[]>([]);
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
+  const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
 
   // Reset calculated result whenever any input changes — user must
   // re-trigger the calculation explicitly via the button.
