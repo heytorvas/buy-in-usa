@@ -90,22 +90,9 @@ export function CompareResults(props: CompareInput) {
   }
 
   const best = rows[0];
-  const worst = rows[rows.length - 1];
-  const savings = worst.finalBRL - best.finalBRL;
 
   return (
     <div className="space-y-3 animate-fade-in">
-      {rows.length > 1 && savings > 0 && (
-        <div className="bg-secondary-light/40 border border-secondary rounded-2xl p-4 text-sm">
-          <div className="font-bold text-secondary">
-            Economia de até {formatBRL(savings)}
-          </div>
-          <div className="text-xs text-muted-foreground mt-1">
-            Comparando a melhor opção ({best.institutionLabel}) com a mais cara ({worst.institutionLabel}).
-          </div>
-        </div>
-      )}
-
       <ol className="space-y-3">
         {rows.map((row, idx) => {
           const isBest = idx === 0;
