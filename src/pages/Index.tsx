@@ -9,6 +9,7 @@ import {
   cashConfig,
 } from "@/components/calculator/PaymentSection";
 import { ResultCard } from "@/components/calculator/ResultCard";
+import { CompareResults } from "@/components/calculator/CompareResults";
 import { StepHeader } from "@/components/calculator/StepHeader";
 import { calculate, type PaymentMethod } from "@/lib/calculator";
 import { ptax } from "@/lib/ptax";
@@ -21,11 +22,35 @@ const Index = () => {
   const [bankCode, setBankCode] = useState(banks[0].code);
   const [hasCalculated, setHasCalculated] = useState(false);
 
+  // Compare mode state
+  const [compareMode, setCompareMode] = useState(false);
+  const [selectedMethods, setSelectedMethods] = useState<PaymentMethod[]>([
+    "cash",
+    "global",
+    "credit",
+  ]);
+  const [selectedAccounts, setSelectedAccounts] = useState<string[]>(
+    accounts.map((a) => a.code),
+  );
+  const [selectedBanks, setSelectedBanks] = useState<string[]>(
+    banks.map((b) => b.code),
+  );
+
   // Reset calculated result whenever any input changes — user must
   // re-trigger the calculation explicitly via the button.
   useEffect(() => {
     setHasCalculated(false);
-  }, [priceStr, stateCode, method, bankCode, accountCode]);
+  }, [
+    priceStr,
+    stateCode,
+    method,
+    bankCode,
+    accountCode,
+    compareMode,
+    selectedMethods,
+    selectedAccounts,
+    selectedBanks,
+  ]);
 
   const stateInfo = useMemo(
     () => states.find((s) => s.code === stateCode) ?? states[0],
@@ -117,6 +142,14 @@ const Index = () => {
               onAccountChange={setAccountCode}
               bankCode={bankCode}
               onBankChange={setBankCode}
+              compareMode={compareMode}
+              onCompareModeChange={setCompareMode}
+              selectedMethods={selectedMethods}
+              onSelectedMethodsChange={setSelectedMethods}
+              selectedAccounts={selectedAccounts}
+              onSelectedAccountsChange={setSelectedAccounts}
+              selectedBanks={selectedBanks}
+              onSelectedBanksChange={setSelectedBanks}
             />
           </section>
 
@@ -131,18 +164,33 @@ const Index = () => {
 
           {showResult && result && (
             <section id="resultado" className="flex flex-col gap-4 mt-4 scroll-mt-6">
-              <StepHeader number={4} title="Resultado Final" variant="sage" />
-              <ResultCard
-                result={result}
-                priceUSD={priceUSD}
-                stateInfo={stateInfo}
-                spreadRate={spread}
-                institutionLabel={institutionLabel}
-                method={method}
-                ptax={ptax}
-                stateTaxMeta={stateTaxMeta}
-                banksMeta={banksMeta}
+              <StepHeader
+                number={4}
+                title={compareMode ? "Comparativo" : "Resultado Final"}
+                variant="sage"
               />
+              {compareMode ? (
+                <CompareResults
+                  priceUSD={priceUSD}
+                  stateInfo={stateInfo}
+                  ptax={ptax}
+                  selectedMethods={selectedMethods}
+                  selectedAccounts={selectedAccounts}
+                  selectedBanks={selectedBanks}
+                />
+              ) : (
+                <ResultCard
+                  result={result}
+                  priceUSD={priceUSD}
+                  stateInfo={stateInfo}
+                  spreadRate={spread}
+                  institutionLabel={institutionLabel}
+                  method={method}
+                  ptax={ptax}
+                  stateTaxMeta={stateTaxMeta}
+                  banksMeta={banksMeta}
+                />
+              )}
             </section>
           )}
         </div>
