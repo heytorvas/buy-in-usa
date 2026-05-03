@@ -90,8 +90,6 @@ export function CompareResults(props: CompareInput) {
   }
 
   const best = rows[0];
-  const worst = rows[rows.length - 1];
-  const savings = worst.finalBRL - best.finalBRL;
 
   return (
     <div className="space-y-3 animate-fade-in">
