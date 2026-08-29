@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { calculate, formatBRL, formatPercent, formatUSD } from "./calculator";
+import { calculate, formatBRL, formatPercent, formatUSD } from "@/lib/calculator";
 
 describe("formatBRL", () => {
   it("formats a finite number in pt-BR", () => {

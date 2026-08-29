@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSitemapXml } from "./vite-plugin-calculator-assets";
+import { buildSitemapXml } from "@/vite-plugin-calculator-assets";
 
 describe("buildSitemapXml", () => {
   it("injects lastmod", () => {

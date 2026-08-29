@@ -3,7 +3,7 @@ import {
   parseBanksFile,
   parseStateTaxFile,
   POSTAL_CODES,
-} from "./catalog";
+} from "@/lib/catalog";
 import {
   banksFileNegativeSpread,
   banksFileNonFiniteIof,

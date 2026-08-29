@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { accounts, banks } from "./catalog";
-import { defaultSelection } from "./selection";
-import { buildScenarios, toResultPayload } from "./scenarios";
+import { accounts, banks } from "@/lib/catalog";
+import { defaultSelection } from "@/lib/selection";
+import { buildScenarios, toResultPayload } from "@/lib/scenarios";
 
 describe("buildScenarios", () => {
   it("returns one cash row in single mode", () => {

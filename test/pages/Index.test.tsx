@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
-import Index from "./Index";
+import Index from "@/pages/Index";
 
 async function typePrice(user: ReturnType<typeof userEvent.setup>, value: string) {
   const input = screen.getByLabelText(/dólares americanos/i);

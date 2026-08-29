@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { banks, type PaymentMethod } from "./catalog";
-import { defaultSelection } from "./selection";
-import { parseSelection, serializeSelection } from "./url-state";
+import { banks, type PaymentMethod } from "@/lib/catalog";
+import { defaultSelection } from "@/lib/selection";
+import { parseSelection, serializeSelection } from "@/lib/url-state";
 
 describe("url-state", () => {
   it("round-trips a compare selection", () => {

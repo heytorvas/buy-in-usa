@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { accounts } from "./catalog";
-import { defaultSelection, parsePriceUsd, selectionsEqual } from "./selection";
+import { accounts } from "@/lib/catalog";
+import { defaultSelection, parsePriceUsd, selectionsEqual } from "@/lib/selection";
 
 describe("parsePriceUsd", () => {
   it("accepts a comma decimal", () => {

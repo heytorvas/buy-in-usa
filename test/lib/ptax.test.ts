@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parsePtaxFile } from "./ptax";
+import { parsePtaxFile } from "@/lib/ptax";
 
 describe("parsePtaxFile", () => {
   it("reads rate and dates", () => {

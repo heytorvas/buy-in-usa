@@ -8,7 +8,7 @@ export default tseslint.config(
   { ignores: ["dist"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}", "test/**/*.{ts,tsx}"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
@@ -27,7 +27,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["src/vite-plugin-calculator-assets.ts"],
+    files: ["src/vite-plugin-calculator-assets.ts", "test/**/*.{ts,tsx}"],
     rules: {
       "react-refresh/only-export-components": "off",
     },
