@@ -5,10 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5, viewport-fit=cover" />
     <meta name="theme-color" content="#E85D3A" />
     <meta name="color-scheme" content="light" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; base-uri 'self'"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
 
     <title>EUA x Brasil: Calculadora de Compras Internacionais em Reais</title>
     <meta name="description" content="Calcule grátis o custo real em reais de compras nos EUA. Compara dinheiro, conta internacional e cartão de crédito com IOF 2025, spread bancário e PTAX oficial do Banco Central." />
-    <meta name="keywords" content="calculadora compras EUA, dólar para real, IOF cartão internacional, PTAX, conta global, dólar turismo, sales tax EUA, compras internacionais Brasil" />
     <meta name="author" content="EUA x Brasil Calculadora" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -21,22 +26,25 @@
     <meta property="og:url" content="https://dolar.heytor.dev/" />
     <meta property="og:title" content="EUA x Brasil: Calculadora de Compras Internacionais" />
     <meta property="og:description" content="Compare o custo real em reais de compras nos EUA: dinheiro, conta internacional e cartão de crédito. Inclui IOF 2025, spread e PTAX oficial." />
-    <meta property="og:image" content="https://dolar.heytor.dev/favicon.png" />
-    <meta property="og:image:alt" content="EUA x Brasil Calculadora — converta compras em dólar para reais" />
+    <meta property="og:image" content="https://dolar.heytor.dev/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="EUA x Brasil — Compare o custo real de compras nos EUA em reais" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://dolar.heytor.dev/" />
     <meta name="twitter:title" content="EUA x Brasil: Calculadora de Compras Internacionais" />
     <meta name="twitter:description" content="Compare o custo real em reais de compras nos EUA com IOF, spread e PTAX oficial." />
-    <meta name="twitter:image" content="https://dolar.heytor.dev/favicon.png" />
+    <meta name="twitter:image" content="https://dolar.heytor.dev/og.png" />
+    <meta name="twitter:image:alt" content="EUA x Brasil — Compare o custo real de compras nos EUA em reais" />
 
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&display=swap" rel="stylesheet" />
 
     <!-- Structured data: WebApplication + FAQ for rich results & LLM grounding -->
     <script type="application/ld+json">
@@ -58,7 +66,9 @@
             "Sales tax estadual + média local dos 50 estados + DC (Tax Foundation)",
             "IOF 2025 por meio de pagamento (3,5% padrão, 1,1% reduzido, 0% subsidiado)",
             "Spread cambial específico de bancos, contas globais e casas de câmbio",
-            "Comparação entre dinheiro, conta internacional e cartão de crédito"
+            "Comparação entre dinheiro, conta internacional e cartão de crédito",
+            "Comparação lado a lado de vários métodos e instituições",
+            "Formulário compartilhável pela query string"
           ]
         },
         {

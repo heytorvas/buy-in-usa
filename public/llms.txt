@@ -10,7 +10,14 @@ URL: https://dolar.heytor.dev/
 - Soma sales tax estadual + média local do estado escolhido (50 estados + DC).
 - Aplica IOF correto por meio de pagamento (3,5% padrão; 1,1% reduzido onde aplicável; 0% em cartões com IOF subsidiado).
 - Aplica spread cambial específico de cada banco/conta/casa de câmbio.
-- Compara três cenários: dinheiro (dólar turismo), conta internacional global, cartão de crédito internacional.
+- Modo comparação: coloca lado a lado vários métodos e instituições no mesmo preço e estado.
+- O formulário é compartilhável pela query string (preço, estado, meios e instituições).
+
+## Dados em JSON
+
+- https://dolar.heytor.dev/data/ptax.json
+- https://dolar.heytor.dev/data/usa_state_tax.json
+- https://dolar.heytor.dev/data/banks_spread.json
 
 ## Fontes oficiais
 
@@ -25,4 +32,4 @@ URL: https://dolar.heytor.dev/
 
 ## Páginas principais
 
-- /  — Calculadora interativa
+- /  — Calculadora interativa (inclui modo comparação)

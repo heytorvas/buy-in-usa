@@ -26,4 +26,10 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    files: ["src/vite-plugin-calculator-assets.ts"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
 );
