@@ -151,11 +151,12 @@ function parsePercent(raw: unknown, label: string): number {
     throw new Error(`${label}: expected a percent string`);
   }
   const n = parseFloat(raw);
-  // Finite only: Tax Foundation reports New Jersey avg_local as a small negative offset.
   if (!Number.isFinite(n)) {
     throw new Error(`${label}: tax rate must be finite`);
   }
-  return n / 100;
+  // Spec requires >= 0. Tax Foundation publishes NJ avg_local as a tiny
+  // negative offset; keep the app loadable without rewriting source JSON.
+  return Math.max(0, n) / 100;
 }
 
 export function parseStateTaxFile(raw: unknown): {

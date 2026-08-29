@@ -77,7 +77,7 @@ No `paymentMethod`. No `DEFAULT_IOF`. Combined tax = `stateTax + avgLocalTax`.
 
 Audit includes: existing breakdown, `vetPerUSD = ptax * (1 + spread) * (1 + iofRate)`, `stateOnlyBRL`, `localTaxBRL`.
 
-PTAX `rate` must be finite and `> 0`. Tax, IOF, spread must be finite and `>= 0`. Missing postal code for a scraped state name is a hard error (no `name.slice(0, 2)`).
+PTAX `rate` must be finite and `> 0`. IOF and spread must be finite and `>= 0`. Tax percents must be finite; a negative source offset (Tax Foundation NJ `avg_local`) is clamped to `0` so the app still loads without rewriting JSON. Missing postal code for a scraped state name is a hard error (no `name.slice(0, 2)`).
 
 ## UI and a11y
 

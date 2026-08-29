@@ -72,9 +72,9 @@ describe("parseStateTaxFile", () => {
     expect(() => parseStateTaxFile(nonFiniteTaxFile)).toThrow(/tax/i);
   });
 
-  it("allows New Jersey negative avg local offset", () => {
+  it("clamps New Jersey negative avg local offset to zero", () => {
     const parsed = parseStateTaxFile(newJerseyOffsetTaxFile);
-    expect(parsed.states[0]?.avgLocalTax).toBeCloseTo(-0.0002, 8);
+    expect(parsed.states[0]?.avgLocalTax).toBe(0);
   });
 });
 
