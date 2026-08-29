@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { accounts, banks } from "./catalog";
 import { defaultSelection } from "./selection";
-import { buildScenarios } from "./scenarios";
+import { buildScenarios, toResultPayload } from "./scenarios";
 
 describe("buildScenarios", () => {
   it("returns one cash row in single mode", () => {
@@ -46,5 +46,17 @@ describe("buildScenarios", () => {
       5,
     );
     expect(rows[0]?.institutionLabel).toBe(accounts[0].name);
+  });
+});
+
+describe("toResultPayload", () => {
+  it("toResultPayload copies numeric fields", () => {
+    const selection = { ...defaultSelection(), priceStr: "10", stateCode: "FL" };
+    const rows = buildScenarios(selection, 5);
+    const payload = toResultPayload(selection, rows);
+    expect(payload.priceUsd).toBe(10);
+    expect(payload.state).toBe("FL");
+    expect(payload.count).toBe(1);
+    expect(payload.rows[0]?.finalBrl).toEqual(rows[0]?.finalBRL);
   });
 });

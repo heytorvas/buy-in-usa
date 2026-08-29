@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { PriceInput } from "@/components/calculator/PriceInput";
 import { StateSelect } from "@/components/calculator/StateSelect";
@@ -8,17 +8,21 @@ import { CompareResults } from "@/components/calculator/CompareResults";
 import { StepHeader } from "@/components/calculator/StepHeader";
 import { banksMeta, states, stateTaxMeta } from "@/lib/catalog";
 import { ptax } from "@/lib/ptax";
-import { buildScenarios } from "@/lib/scenarios";
-import {
-  defaultSelection,
-  parsePriceUsd,
-  selectionsEqual,
-  type CalculatorSelection,
-} from "@/lib/selection";
+import { buildScenarios, toResultPayload } from "@/lib/scenarios";
+import { parsePriceUsd, selectionsEqual, type CalculatorSelection } from "@/lib/selection";
+import { parseSelection, serializeSelection } from "@/lib/url-state";
 
 const Index = () => {
-  const [selection, setSelection] = useState<CalculatorSelection>(defaultSelection);
+  const [selection, setSelection] = useState<CalculatorSelection>(() =>
+    parseSelection(window.location.search),
+  );
   const [submitted, setSubmitted] = useState<CalculatorSelection | null>(null);
+
+  useEffect(() => {
+    const query = serializeSelection(selection);
+    const next = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    window.history.replaceState(null, "", next);
+  }, [selection]);
 
   const update = (patch: Partial<CalculatorSelection>) => {
     const next = { ...selection, ...patch };
@@ -44,6 +48,11 @@ const Index = () => {
     }
     return stateInfo;
   }, [submitted]);
+
+  const payload = useMemo(
+    () => (showResult && submitted ? toResultPayload(submitted, rows) : null),
+    [showResult, submitted, rows],
+  );
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -121,33 +130,40 @@ const Index = () => {
           </button>
         </form>
 
-        {showResult && submitted && (
+        {showResult && submitted && payload && (
           <section
             id="resultado"
             tabIndex={-1}
             aria-live="polite"
             className="flex flex-col gap-4 mt-4 scroll-mt-6"
+            data-price-usd={payload.priceUsd}
+            data-state={payload.state}
+            data-compare={payload.compare ? "true" : "false"}
+            data-count={payload.count}
           >
-              <StepHeader
-                number={4}
-                title={submitted.compareMode ? "Comparativo" : "Resultado Final"}
-                variant="sage"
-              />
-              {submitted.compareMode ? (
-                <CompareResults rows={rows} />
-              ) : (
-                rows[0] && submittedState && (
-                  <ResultCard
-                    row={rows[0]}
-                    priceUSD={parsePriceUsd(submitted.priceStr)}
-                    stateInfo={submittedState}
-                    ptax={ptax}
-                    stateTaxMeta={stateTaxMeta}
-                    banksMeta={banksMeta}
-                  />
-                )
-              )}
-            </section>
+            <StepHeader
+              number={4}
+              title={submitted.compareMode ? "Comparativo" : "Resultado Final"}
+              variant="sage"
+            />
+            {submitted.compareMode ? (
+              <CompareResults rows={rows} />
+            ) : (
+              rows[0] && submittedState && (
+                <ResultCard
+                  row={rows[0]}
+                  priceUSD={parsePriceUsd(submitted.priceStr)}
+                  stateInfo={submittedState}
+                  ptax={ptax}
+                  stateTaxMeta={stateTaxMeta}
+                  banksMeta={banksMeta}
+                />
+              )
+            )}
+            <script type="application/json" id="resultado-json">
+              {JSON.stringify(payload)}
+            </script>
+          </section>
         )}
       </main>
     </div>

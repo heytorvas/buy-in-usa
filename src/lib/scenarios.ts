@@ -112,3 +112,38 @@ export function buildScenarios(
 
   return rows.sort((a, b) => a.finalBRL - b.finalBRL);
 }
+
+export interface ResultPayload {
+  priceUsd: number;
+  state: string;
+  compare: boolean;
+  count: number;
+  rows: Array<{
+    method: PaymentMethod;
+    institution: string;
+    finalBrl: number;
+    spread: number;
+    iof: number;
+    vet: number;
+  }>;
+}
+
+export function toResultPayload(
+  selection: CalculatorSelection,
+  rows: ScenarioRow[],
+): ResultPayload {
+  return {
+    priceUsd: parsePriceUsd(selection.priceStr),
+    state: selection.stateCode,
+    compare: selection.compareMode,
+    count: rows.length,
+    rows: rows.map((row) => ({
+      method: row.method,
+      institution: row.institutionLabel,
+      finalBrl: row.finalBRL,
+      spread: row.spread,
+      iof: row.iofRate,
+      vet: row.vetPerUSD,
+    })),
+  };
+}

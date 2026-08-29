@@ -43,7 +43,15 @@ export function ResultCard({
   const localBRL = audit.localTaxBRL;
 
   return (
-    <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
+    <div
+      className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in"
+      data-method={row.method}
+      data-institution={row.institutionLabel}
+      data-final-brl={row.finalBRL}
+      data-spread={row.spread}
+      data-iof={row.iofRate}
+      data-vet={row.vetPerUSD}
+    >
       <span className="text-xs font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4">
         Total Final Estimado
       </span>

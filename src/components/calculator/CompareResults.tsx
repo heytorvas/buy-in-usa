@@ -25,6 +25,12 @@ export function CompareResults({ rows }: { rows: ScenarioRow[] }): JSX.Element {
               className={`bg-card rounded-2xl p-5 border-2 shadow-warm transition-colors ${
                 isBest ? "border-secondary" : "border-border"
               }`}
+              data-method={row.method}
+              data-institution={row.institutionLabel}
+              data-final-brl={row.finalBRL}
+              data-spread={row.spread}
+              data-iof={row.iofRate}
+              data-vet={row.vetPerUSD}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0">

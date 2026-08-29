@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import Index from "./Index";
 
 async function typePrice(user: ReturnType<typeof userEvent.setup>, value: string) {
@@ -10,6 +10,10 @@ async function typePrice(user: ReturnType<typeof userEvent.setup>, value: string
 }
 
 describe("Index", () => {
+  afterEach(() => {
+    window.history.replaceState(null, "", "/");
+  });
+
   it("renders the heading", () => {
     render(<Index />);
     expect(
@@ -61,5 +65,32 @@ describe("Index", () => {
   it("names the compare switch", () => {
     render(<Index />);
     expect(screen.getByRole("switch", { name: /Modo Comparar/i })).toBeInTheDocument();
+  });
+
+  it("restores price from the query string without showing a result", () => {
+    window.history.replaceState(null, "", "/?p=42&st=NY");
+    render(<Index />);
+    expect(screen.getByLabelText(/dólares americanos/i)).toHaveValue("42");
+    expect(screen.queryByText(/Total Final Estimado/i)).not.toBeInTheDocument();
+  });
+
+  it("writes the query string when the price changes", async () => {
+    window.history.replaceState(null, "", "/");
+    const user = userEvent.setup();
+    render(<Index />);
+    await user.type(screen.getByLabelText(/dólares americanos/i), "15");
+    expect(window.location.search).toMatch(/p=15/);
+  });
+
+  it("exposes resultado-json after submit", async () => {
+    const user = userEvent.setup();
+    render(<Index />);
+    await user.type(screen.getByLabelText(/dólares americanos/i), "20");
+    await user.click(screen.getByRole("button", { name: /Calcular Total/i }));
+    const node = document.getElementById("resultado-json");
+    expect(node).toBeTruthy();
+    const body = JSON.parse(node!.textContent ?? "{}");
+    expect(body.priceUsd).toBe(20);
+    expect(body.count).toBeGreaterThan(0);
   });
 });
