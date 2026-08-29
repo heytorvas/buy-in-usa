@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
 import { type BanksMeta, type StateTaxMeta, type UsState } from "@/lib/catalog";
 import type { PtaxResult } from "@/lib/ptax";
@@ -14,7 +15,7 @@ interface ResultCardProps {
   banksMeta?: BanksMeta;
 }
 
-function Pill({ children }: { children: React.ReactNode }) {
+function Pill({ children }: { children: ReactNode }) {
   return (
     <span className="text-[10px] bg-secondary-light/60 text-secondary px-2 py-0.5 rounded-full font-bold">
       {children}
