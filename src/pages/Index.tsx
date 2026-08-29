@@ -1,94 +1,51 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PriceInput } from "@/components/calculator/PriceInput";
 import { StateSelect } from "@/components/calculator/StateSelect";
 import { PaymentSection } from "@/components/calculator/PaymentSection";
 import { ResultCard } from "@/components/calculator/ResultCard";
 import { CompareResults } from "@/components/calculator/CompareResults";
 import { StepHeader } from "@/components/calculator/StepHeader";
-import { calculate } from "@/lib/calculator";
-import {
-  accounts,
-  banks,
-  banksMeta,
-  cashConfig,
-  states,
-  stateTaxMeta,
-  type PaymentMethod,
-} from "@/lib/catalog";
+import { banksMeta, states, stateTaxMeta } from "@/lib/catalog";
 import { ptax } from "@/lib/ptax";
+import { buildScenarios } from "@/lib/scenarios";
+import {
+  defaultSelection,
+  parsePriceUsd,
+  selectionsEqual,
+  type CalculatorSelection,
+} from "@/lib/selection";
 
 const Index = () => {
-  const [priceStr, setPriceStr] = useState("");
-  const [stateCode, setStateCode] = useState("FL");
-  const [method, setMethod] = useState<PaymentMethod>("cash");
-  const [accountCode, setAccountCode] = useState(accounts[0].code);
-  const [bankCode, setBankCode] = useState(banks[0].code);
-  const [hasCalculated, setHasCalculated] = useState(false);
+  const [selection, setSelection] = useState<CalculatorSelection>(defaultSelection);
+  const [submitted, setSubmitted] = useState<CalculatorSelection | null>(null);
 
-  // Compare mode state
-  const [compareMode, setCompareMode] = useState(false);
-  const [selectedMethods, setSelectedMethods] = useState<PaymentMethod[]>([]);
-  const [selectedAccounts, setSelectedAccounts] = useState<string[]>([]);
-  const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
+  const update = (patch: Partial<CalculatorSelection>) => {
+    const next = { ...selection, ...patch };
+    setSelection(next);
+    setSubmitted((current) =>
+      current && selectionsEqual(next, current) ? current : null,
+    );
+  };
 
-  // Reset calculated result whenever any input changes — user must
-  // re-trigger the calculation explicitly via the button.
-  useEffect(() => {
-    setHasCalculated(false);
-  }, [
-    priceStr,
-    stateCode,
-    method,
-    bankCode,
-    accountCode,
-    compareMode,
-    selectedMethods,
-    selectedAccounts,
-    selectedBanks,
-  ]);
+  const priceUSD = parsePriceUsd(selection.priceStr);
+  const showResult = submitted !== null && selectionsEqual(selection, submitted);
 
-  const stateInfo = useMemo(
-    () => states.find((s) => s.code === stateCode) ?? states[0],
-    [stateCode],
-  );
-  const accountInfo = useMemo(
-    () => accounts.find((a) => a.code === accountCode) ?? accounts[0],
-    [accountCode],
-  );
-  const bankInfo = useMemo(
-    () => banks.find((b) => b.code === bankCode) ?? banks[0],
-    [bankCode],
+  const rows = useMemo(
+    () => (showResult && submitted ? buildScenarios(submitted, ptax.rate) : []),
+    [showResult, submitted],
   );
 
-  const priceUSD = parseFloat(priceStr.replace(",", ".")) || 0;
-
-  // Resolve spread + IOF based on selected payment method
-  const { spread, iofRate, institutionLabel } = useMemo(() => {
-    if (method === "credit") {
-      return { spread: bankInfo.spread, iofRate: bankInfo.iof, institutionLabel: bankInfo.name };
+  const submittedState = useMemo(() => {
+    if (!submitted) return null;
+    const stateInfo = states.find((s) => s.code === submitted.stateCode);
+    if (!stateInfo) {
+      throw new Error(`Unknown state code: ${submitted.stateCode}`);
     }
-    if (method === "global") {
-      return { spread: accountInfo.spread, iofRate: accountInfo.iof, institutionLabel: accountInfo.name };
-    }
-    // cash — apply tourism dollar spread on top of PTAX, with reduced IOF.
-    return { spread: cashConfig.spread, iofRate: cashConfig.iof, institutionLabel: cashConfig.name };
-  }, [method, bankInfo, accountInfo]);
-
-  const result = useMemo(() => {
-    return calculate({
-      priceUSD,
-      stateTax: stateInfo.stateTax,
-      avgLocalTax: stateInfo.avgLocalTax,
-      ptax: ptax.rate,
-      spread,
-      iofRate,
-    });
-  }, [priceUSD, stateInfo, spread, iofRate]);
-
-  const showResult = hasCalculated && result && priceUSD > 0;
+    return stateInfo;
+  }, [submitted]);
 
   const handleCalculate = () => {
-    setHasCalculated(true);
+    setSubmitted({ ...selection });
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         document
@@ -120,31 +77,37 @@ const Index = () => {
         <div className="flex flex-col gap-8">
           <section className="flex flex-col gap-4">
             <StepHeader number={1} title="Preço do Produto" />
-            <PriceInput value={priceStr} onChange={setPriceStr} />
+            <PriceInput
+              value={selection.priceStr}
+              onChange={(priceStr) => update({ priceStr })}
+            />
           </section>
 
           <section className="flex flex-col gap-4">
             <StepHeader number={2} title="Localização" />
-            <StateSelect value={stateCode} onChange={setStateCode} />
+            <StateSelect
+              value={selection.stateCode}
+              onChange={(stateCode) => update({ stateCode })}
+            />
           </section>
 
           <section className="flex flex-col gap-4">
             <StepHeader number={3} title="Pagamento" />
             <PaymentSection
-              method={method}
-              onMethodChange={setMethod}
-              accountCode={accountCode}
-              onAccountChange={setAccountCode}
-              bankCode={bankCode}
-              onBankChange={setBankCode}
-              compareMode={compareMode}
-              onCompareModeChange={setCompareMode}
-              selectedMethods={selectedMethods}
-              onSelectedMethodsChange={setSelectedMethods}
-              selectedAccounts={selectedAccounts}
-              onSelectedAccountsChange={setSelectedAccounts}
-              selectedBanks={selectedBanks}
-              onSelectedBanksChange={setSelectedBanks}
+              method={selection.method}
+              onMethodChange={(method) => update({ method })}
+              accountCode={selection.accountCode}
+              onAccountChange={(accountCode) => update({ accountCode })}
+              bankCode={selection.bankCode}
+              onBankChange={(bankCode) => update({ bankCode })}
+              compareMode={selection.compareMode}
+              onCompareModeChange={(compareMode) => update({ compareMode })}
+              selectedMethods={selection.selectedMethods}
+              onSelectedMethodsChange={(selectedMethods) => update({ selectedMethods })}
+              selectedAccounts={selection.selectedAccounts}
+              onSelectedAccountsChange={(selectedAccounts) => update({ selectedAccounts })}
+              selectedBanks={selection.selectedBanks}
+              onSelectedBanksChange={(selectedBanks) => update({ selectedBanks })}
             />
           </section>
 
@@ -157,34 +120,26 @@ const Index = () => {
             Calcular Total
           </button>
 
-          {showResult && result && (
+          {showResult && submitted && (
             <section id="resultado" className="flex flex-col gap-4 mt-4 scroll-mt-6">
               <StepHeader
                 number={4}
-                title={compareMode ? "Comparativo" : "Resultado Final"}
+                title={submitted.compareMode ? "Comparativo" : "Resultado Final"}
                 variant="sage"
               />
-              {compareMode ? (
-                <CompareResults
-                  priceUSD={priceUSD}
-                  stateInfo={stateInfo}
-                  ptax={ptax}
-                  selectedMethods={selectedMethods}
-                  selectedAccounts={selectedAccounts}
-                  selectedBanks={selectedBanks}
-                />
+              {submitted.compareMode ? (
+                <CompareResults rows={rows} />
               ) : (
-                <ResultCard
-                  result={result}
-                  priceUSD={priceUSD}
-                  stateInfo={stateInfo}
-                  spreadRate={spread}
-                  institutionLabel={institutionLabel}
-                  method={method}
-                  ptax={ptax}
-                  stateTaxMeta={stateTaxMeta}
-                  banksMeta={banksMeta}
-                />
+                rows[0] && submittedState && (
+                  <ResultCard
+                    row={rows[0]}
+                    priceUSD={parsePriceUsd(submitted.priceStr)}
+                    stateInfo={submittedState}
+                    ptax={ptax}
+                    stateTaxMeta={stateTaxMeta}
+                    banksMeta={banksMeta}
+                  />
+                )
               )}
             </section>
           )}

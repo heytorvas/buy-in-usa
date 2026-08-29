@@ -1,22 +1,14 @@
-import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
-import {
-  METHOD_LABEL,
-  type BanksMeta,
-  type PaymentMethod,
-  type StateTaxMeta,
-  type UsState,
-} from "@/lib/catalog";
+import { formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
+import { type BanksMeta, type StateTaxMeta, type UsState } from "@/lib/catalog";
 import type { PtaxResult } from "@/lib/ptax";
+import type { ScenarioRow } from "@/lib/scenarios";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
 
 interface ResultCardProps {
-  result: CalculationResult;
+  row: ScenarioRow;
   priceUSD: number;
   stateInfo: UsState;
-  spreadRate: number;
-  institutionLabel: string;
-  method: PaymentMethod;
   ptax?: PtaxResult;
   stateTaxMeta?: StateTaxMeta;
   banksMeta?: BanksMeta;
@@ -31,22 +23,19 @@ function Pill({ children }: { children: React.ReactNode }) {
 }
 
 export function ResultCard({
-  result,
+  row,
   priceUSD,
   stateInfo,
-  spreadRate,
-  institutionLabel,
-  method,
   ptax,
   stateTaxMeta,
   banksMeta,
 }: ResultCardProps) {
-  const { finalBRL, audit } = result;
+  const { finalBRL, audit } = row.result;
   const taxesBRL = audit.stateTaxBRL + audit.spreadBRL + audit.iofBRL;
   const totalForChart = audit.basePriceBRL + taxesBRL;
   const productPct = totalForChart > 0 ? audit.basePriceBRL / totalForChart : 0;
   const taxesPct = 1 - productPct;
-  const hasSpread = spreadRate > 0;
+  const hasSpread = row.spread > 0;
 
   const combinedTax = stateInfo.combinedTax;
   const vetPerUSD = audit.vetPerUSD;
@@ -68,7 +57,7 @@ export function ResultCard({
         ≈ {formatUSD(priceUSD)} USD (Custo Efetivo Total)
       </span>
       <span className="text-xs text-muted-foreground mb-8">
-        {METHOD_LABEL[method]} · {institutionLabel}
+        {row.methodLabel} · {row.institutionLabel}
       </span>
 
       <div className="w-full border-t border-border pt-8 space-y-6">
@@ -111,7 +100,7 @@ export function ResultCard({
             </li>
             <li className="flex justify-between items-center">
               <span className="text-muted-foreground flex items-center gap-2">
-                Spread <Pill>{formatPercent(spreadRate, 2)}</Pill>
+                Spread <Pill>{formatPercent(row.spread, 2)}</Pill>
               </span>
               {hasSpread ? (
                 <span className="font-bold tabular-nums">{formatBRL(audit.spreadBRL)}</span>
@@ -209,12 +198,12 @@ export function ResultCard({
                 </dd>
               </div>
             )}
-            {method === "cash" && (
+            {row.method === "cash" && (
               <div>
                 <dt className="font-semibold text-foreground">Dólar turismo</dt>
                 <dd>
                   Compra em espécie usa o dólar turismo, estimado como PTAX +
-                  spread médio de casas de câmbio ({formatPercent(spreadRate, 2)}).
+                  spread médio de casas de câmbio ({formatPercent(row.spread, 2)}).
                   O valor exato varia por casa de câmbio e cidade.
                 </dd>
               </div>

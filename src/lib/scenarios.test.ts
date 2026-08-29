@@ -8,6 +8,7 @@ describe("buildScenarios", () => {
     const rows = buildScenarios(defaultSelection(), 5);
     expect(rows).toHaveLength(1);
     expect(rows[0]?.method).toBe("cash");
+    expect(rows[0]?.result.audit.vetPerUSD).toBeDefined();
   });
 
   it("returns no rows when compare lists are empty", () => {

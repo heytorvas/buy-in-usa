@@ -1,4 +1,4 @@
-import { calculate } from "./calculator";
+import { calculate, type CalculationResult } from "./calculator";
 import {
   accounts,
   banks,
@@ -19,6 +19,7 @@ export interface ScenarioRow {
   finalBRL: number;
   effectiveRate: number;
   vetPerUSD: number;
+  result: CalculationResult;
 }
 
 function resolveState(stateCode: string) {
@@ -62,6 +63,7 @@ export function buildScenarios(
       finalBRL: result.finalBRL,
       effectiveRate: result.audit.effectiveExchangeRate,
       vetPerUSD: result.audit.vetPerUSD,
+      result,
     });
   };
 

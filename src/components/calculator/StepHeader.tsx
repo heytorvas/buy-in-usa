@@ -1,10 +1,7 @@
-import { ReactNode } from "react";
-
 interface StepHeaderProps {
   number: number;
   title: string;
   variant?: "primary" | "sage";
-  children?: ReactNode;
 }
 
 export function StepHeader({ number, title, variant = "primary" }: StepHeaderProps) {

@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { accounts, banks, METHOD_LABEL, type PaymentMethod } from "@/lib/catalog";
+import { InstitutionChecklist } from "./InstitutionChecklist";
 
 interface PaymentSectionProps {
   // single mode
@@ -203,93 +204,23 @@ export function PaymentSection({
           </fieldset>
 
           {compareGlobal && (
-            <fieldset>
-              <legend className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">
-                <span>Contas Internacionais ({selectedAccounts.length})</span>
-                <span className="flex gap-2 normal-case tracking-normal">
-                  <button
-                    type="button"
-                    onClick={() => onSelectedAccountsChange(sortedAccounts.map((a) => a.code))}
-                    className="text-[11px] text-secondary hover:underline"
-                  >
-                    Todos
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onSelectedAccountsChange([])}
-                    className="text-[11px] text-muted-foreground hover:underline"
-                  >
-                    Limpar
-                  </button>
-                </span>
-              </legend>
-              <div className="max-h-56 overflow-y-auto rounded-xl bg-input-bg p-2 space-y-1">
-                {sortedAccounts.map((a) => {
-                  const checked = selectedAccounts.includes(a.code);
-                  return (
-                    <label
-                      key={a.code}
-                      className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-card/60"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() =>
-                          onSelectedAccountsChange(toggleInArray(selectedAccounts, a.code))
-                        }
-                        className="h-4 w-4 accent-primary"
-                      />
-                      <span className="text-sm">{a.name}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
+            <InstitutionChecklist
+              legend="Contas Internacionais"
+              selectedCount={selectedAccounts.length}
+              items={sortedAccounts}
+              selected={selectedAccounts}
+              onChange={onSelectedAccountsChange}
+            />
           )}
 
           {compareCredit && (
-            <fieldset>
-              <legend className="flex items-center justify-between w-full text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-wider">
-                <span>Cartões de Crédito ({selectedBanks.length})</span>
-                <span className="flex gap-2 normal-case tracking-normal">
-                  <button
-                    type="button"
-                    onClick={() => onSelectedBanksChange(sortedBanks.map((b) => b.code))}
-                    className="text-[11px] text-secondary hover:underline"
-                  >
-                    Todos
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onSelectedBanksChange([])}
-                    className="text-[11px] text-muted-foreground hover:underline"
-                  >
-                    Limpar
-                  </button>
-                </span>
-              </legend>
-              <div className="max-h-56 overflow-y-auto rounded-xl bg-input-bg p-2 space-y-1">
-                {sortedBanks.map((b) => {
-                  const checked = selectedBanks.includes(b.code);
-                  return (
-                    <label
-                      key={b.code}
-                      className="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-card/60"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() =>
-                          onSelectedBanksChange(toggleInArray(selectedBanks, b.code))
-                        }
-                        className="h-4 w-4 accent-primary"
-                      />
-                      <span className="text-sm">{b.name}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </fieldset>
+            <InstitutionChecklist
+              legend="Cartões de Crédito"
+              selectedCount={selectedBanks.length}
+              items={sortedBanks}
+              selected={selectedBanks}
+              onChange={onSelectedBanksChange}
+            />
           )}
         </>
       )}

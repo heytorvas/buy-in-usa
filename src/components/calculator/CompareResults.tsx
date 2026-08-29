@@ -1,86 +1,8 @@
 import { Trophy } from "lucide-react";
-import { calculate, formatBRL, formatPercent } from "@/lib/calculator";
-import {
-  accounts,
-  banks,
-  cashConfig,
-  METHOD_LABEL,
-  type PaymentMethod,
-  type UsState,
-} from "@/lib/catalog";
-import type { PtaxResult } from "@/lib/ptax";
+import { formatBRL, formatPercent } from "@/lib/calculator";
+import type { ScenarioRow } from "@/lib/scenarios";
 
-export interface CompareInput {
-  priceUSD: number;
-  stateInfo: UsState;
-  ptax: PtaxResult;
-  selectedMethods: PaymentMethod[];
-  selectedAccounts: string[];
-  selectedBanks: string[];
-}
-
-interface ScenarioRow {
-  key: string;
-  method: PaymentMethod;
-  methodLabel: string;
-  institutionLabel: string;
-  spread: number;
-  iofRate: number;
-  finalBRL: number;
-  effectiveRate: number;
-}
-
-function buildScenarios(input: CompareInput): ScenarioRow[] {
-  const { priceUSD, stateInfo, ptax, selectedMethods, selectedAccounts, selectedBanks } = input;
-  const rows: ScenarioRow[] = [];
-
-  const run = (
-    key: string,
-    method: PaymentMethod,
-    institutionLabel: string,
-    spread: number,
-    iofRate: number,
-  ) => {
-    const r = calculate({
-      priceUSD,
-      stateTax: stateInfo.stateTax,
-      avgLocalTax: stateInfo.avgLocalTax,
-      ptax: ptax.rate,
-      spread,
-      iofRate,
-    });
-    rows.push({
-      key,
-      method,
-      methodLabel: METHOD_LABEL[method],
-      institutionLabel,
-      spread,
-      iofRate,
-      finalBRL: r.finalBRL,
-      effectiveRate: r.audit.effectiveExchangeRate,
-    });
-  };
-
-  if (selectedMethods.includes("cash")) {
-    run("cash", "cash", cashConfig.name, cashConfig.spread, cashConfig.iof);
-  }
-  if (selectedMethods.includes("global")) {
-    accounts
-      .filter((a) => selectedAccounts.includes(a.code))
-      .forEach((a) => run(`global-${a.code}`, "global", a.name, a.spread, a.iof));
-  }
-  if (selectedMethods.includes("credit")) {
-    banks
-      .filter((b) => selectedBanks.includes(b.code))
-      .forEach((b) => run(`credit-${b.code}`, "credit", b.name, b.spread, b.iof));
-  }
-
-  return rows.sort((a, b) => a.finalBRL - b.finalBRL);
-}
-
-export function CompareResults(props: CompareInput) {
-  const rows = buildScenarios(props);
-
+export function CompareResults({ rows }: { rows: ScenarioRow[] }): JSX.Element {
   if (rows.length === 0) {
     return (
       <div className="bg-card rounded-2xl p-6 border border-border text-center text-sm text-muted-foreground">
