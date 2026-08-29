@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { banks } from "./catalog";
+import { banks, type PaymentMethod } from "./catalog";
 import { defaultSelection } from "./selection";
 import { parseSelection, serializeSelection } from "./url-state";
 
@@ -10,7 +10,7 @@ describe("url-state", () => {
       priceStr: "99.9",
       stateCode: "NY",
       compareMode: true,
-      selectedMethods: ["cash", "credit"] as const,
+      selectedMethods: ["cash", "credit"] as PaymentMethod[],
       selectedBanks: [banks[0].code],
     };
     const parsed = parseSelection(`?${serializeSelection(selection)}`);
