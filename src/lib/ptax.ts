@@ -7,27 +7,48 @@
 import ptaxRaw from "@/data/ptax.json";
 
 export interface PtaxResult {
-  rate: number;        // BRL per USD (sell-side, used as PTAX)
-  buyRate: number;     // BRL per USD (buy-side)
-  date: string;        // ISO date of the quote
-  fetchedAt: string;   // ISO datetime when the scraper last ran
-  fallback: boolean;   // kept for API compatibility — always false now
-}
-
-interface PtaxFile {
   rate: number;
-  sell?: number;
-  buy: number;
   date: string;
-  updated_at: string;
+  fetchedAt: string;
 }
 
-const file = ptaxRaw as PtaxFile;
+function isRecord(raw: unknown): raw is Record<string, unknown> {
+  return typeof raw === "object" && raw !== null;
+}
 
-export const ptax: PtaxResult = {
-  rate: file.rate ?? file.sell ?? 0,
-  buyRate: file.buy,
-  date: file.date,
-  fetchedAt: file.updated_at,
-  fallback: false,
-};
+export function parsePtaxFile(raw: unknown): PtaxResult {
+  if (!isRecord(raw)) {
+    throw new Error("ptax file: expected an object");
+  }
+
+  const rateCandidate =
+    typeof raw.rate === "number"
+      ? raw.rate
+      : typeof raw.sell === "number"
+        ? raw.sell
+        : undefined;
+
+  if (
+    typeof rateCandidate !== "number" ||
+    !Number.isFinite(rateCandidate) ||
+    rateCandidate <= 0
+  ) {
+    throw new Error("ptax file: rate must be a finite number > 0");
+  }
+
+  if (typeof raw.date !== "string" || raw.date.length === 0) {
+    throw new Error("ptax file: invalid date");
+  }
+
+  if (typeof raw.updated_at !== "string" || raw.updated_at.length === 0) {
+    throw new Error("ptax file: invalid updated_at");
+  }
+
+  return {
+    rate: rateCandidate,
+    date: raw.date,
+    fetchedAt: raw.updated_at,
+  };
+}
+
+export const ptax: PtaxResult = parsePtaxFile(ptaxRaw);
