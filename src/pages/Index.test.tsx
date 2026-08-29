@@ -67,6 +67,15 @@ describe("Index", () => {
     expect(screen.getByRole("switch", { name: /Modo Comparar/i })).toBeInTheDocument();
   });
 
+  it("toggles compare mode and hides single-method radios", async () => {
+    const user = userEvent.setup();
+    render(<Index />);
+    expect(screen.getByRole("radiogroup", { name: /Método de pagamento/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("switch", { name: /Modo Comparar/i }));
+    expect(screen.queryByRole("radiogroup", { name: /Método de pagamento/i })).not.toBeInTheDocument();
+    expect(screen.getByText(/Métodos para comparar/i)).toBeInTheDocument();
+  });
+
   it("restores price from the query string without showing a result", () => {
     window.history.replaceState(null, "", "/?p=42&st=NY");
     render(<Index />);
@@ -89,8 +98,27 @@ describe("Index", () => {
     await user.click(screen.getByRole("button", { name: /Calcular Total/i }));
     const node = document.getElementById("resultado-json");
     expect(node).toBeTruthy();
-    const body = JSON.parse(node!.textContent ?? "{}");
+    const body = JSON.parse(node!.textContent ?? "{}") as {
+      priceUsd: number;
+      count: number;
+      state: string;
+      compare: boolean;
+    };
     expect(body.priceUsd).toBe(20);
     expect(body.count).toBeGreaterThan(0);
+
+    const region = document.getElementById("resultado");
+    expect(region).toHaveAttribute("data-price-usd", "20");
+    expect(region).toHaveAttribute("data-state", body.state);
+    expect(region).toHaveAttribute("data-compare", "false");
+    expect(region).toHaveAttribute("data-count", String(body.count));
+
+    const row = region?.querySelector("[data-method]");
+    expect(row).toHaveAttribute("data-method", "cash");
+    expect(row).toHaveAttribute("data-institution");
+    expect(row).toHaveAttribute("data-final-brl");
+    expect(row).toHaveAttribute("data-spread");
+    expect(row).toHaveAttribute("data-iof");
+    expect(row).toHaveAttribute("data-vet");
   });
 });
