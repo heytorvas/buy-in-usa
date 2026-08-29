@@ -1,17 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { PriceInput } from "@/components/calculator/PriceInput";
-import { StateSelect, states, stateTaxMeta } from "@/components/calculator/StateSelect";
+import { StateSelect } from "@/components/calculator/StateSelect";
+import { PaymentSection } from "@/components/calculator/PaymentSection";
+import { ResultCard } from "@/components/calculator/ResultCard";
+import { CompareResults } from "@/components/calculator/CompareResults";
+import { StepHeader } from "@/components/calculator/StepHeader";
+import { calculate } from "@/lib/calculator";
 import {
-  PaymentSection,
   accounts,
   banks,
   banksMeta,
   cashConfig,
-} from "@/components/calculator/PaymentSection";
-import { ResultCard } from "@/components/calculator/ResultCard";
-import { CompareResults } from "@/components/calculator/CompareResults";
-import { StepHeader } from "@/components/calculator/StepHeader";
-import { calculate, type PaymentMethod } from "@/lib/calculator";
+  states,
+  stateTaxMeta,
+  type PaymentMethod,
+} from "@/lib/catalog";
 import { ptax } from "@/lib/ptax";
 
 const Index = () => {

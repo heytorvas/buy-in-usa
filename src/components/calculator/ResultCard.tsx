@@ -1,13 +1,14 @@
-import { CalculationResult, formatBRL, formatUSD, formatPercent, type PaymentMethod } from "@/lib/calculator";
+import { CalculationResult, formatBRL, formatUSD, formatPercent } from "@/lib/calculator";
+import {
+  METHOD_LABEL,
+  type BanksMeta,
+  type PaymentMethod,
+  type StateTaxMeta,
+  type UsState,
+} from "@/lib/catalog";
 import type { PtaxResult } from "@/lib/ptax";
-import type { StateTaxMeta, UsState } from "./StateSelect";
 import { DonutChart } from "./DonutChart";
 import { Info } from "lucide-react";
-
-interface BanksMeta {
-  source: string;
-  last_update: string;
-}
 
 interface ResultCardProps {
   result: CalculationResult;
@@ -28,12 +29,6 @@ function Pill({ children }: { children: React.ReactNode }) {
     </span>
   );
 }
-
-const METHOD_LABEL: Record<PaymentMethod, string> = {
-  cash: "Dinheiro / espécie",
-  global: "Conta internacional",
-  credit: "Cartão de crédito",
-};
 
 export function ResultCard({
   result,

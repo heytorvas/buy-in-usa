@@ -1,8 +1,14 @@
 import { Trophy } from "lucide-react";
-import { calculate, formatBRL, formatPercent, type PaymentMethod } from "@/lib/calculator";
+import { calculate, formatBRL, formatPercent } from "@/lib/calculator";
+import {
+  accounts,
+  banks,
+  cashConfig,
+  METHOD_LABEL,
+  type PaymentMethod,
+  type UsState,
+} from "@/lib/catalog";
 import type { PtaxResult } from "@/lib/ptax";
-import type { UsState } from "./StateSelect";
-import { accounts, banks, cashConfig } from "./PaymentSection";
 
 export interface CompareInput {
   priceUSD: number;
@@ -23,12 +29,6 @@ interface ScenarioRow {
   finalBRL: number;
   effectiveRate: number;
 }
-
-const METHOD_LABEL: Record<PaymentMethod, string> = {
-  cash: "Dinheiro",
-  global: "Conta Internacional",
-  credit: "Cartão de Crédito",
-};
 
 function buildScenarios(input: CompareInput): ScenarioRow[] {
   const { priceUSD, stateInfo, ptax, selectedMethods, selectedAccounts, selectedBanks } = input;

@@ -1,72 +1,5 @@
 import { MapPin, ChevronDown } from "lucide-react";
-import statesRaw from "@/data/usa_state_tax.json";
-
-export interface UsState {
-  code: string;
-  name: string;
-  /** State-only sales tax rate (decimal, e.g. 0.06). */
-  stateTax: number;
-  /** Average local sales tax rate (decimal). */
-  avgLocalTax: number;
-  /** State + average local (decimal) — used in the calculator. */
-  combinedTax: number;
-}
-
-export interface StateTaxMeta {
-  last_update: string;
-  updated_at: string;
-}
-
-interface StateRecord {
-  state: string;
-  avg_local: string;
-  combined: string;
-}
-
-interface StateTaxFile {
-  states: Record<string, StateRecord>;
-  last_update: string;
-  updated_at: string;
-}
-
-const file = statesRaw as StateTaxFile;
-
-const POSTAL_CODES: Record<string, string> = {
-  Alabama: "AL", Alaska: "AK", Arizona: "AZ", Arkansas: "AR",
-  California: "CA", Colorado: "CO", Connecticut: "CT", Delaware: "DE",
-  Florida: "FL", Georgia: "GA", Hawaii: "HI", Idaho: "ID",
-  Illinois: "IL", Indiana: "IN", Iowa: "IA", Kansas: "KS",
-  Kentucky: "KY", Louisiana: "LA", Maine: "ME", Maryland: "MD",
-  Massachusetts: "MA", Michigan: "MI", Minnesota: "MN", Mississippi: "MS",
-  Missouri: "MO", Montana: "MT", Nebraska: "NE", Nevada: "NV",
-  "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY",
-  "North Carolina": "NC", "North Dakota": "ND", Ohio: "OH", Oklahoma: "OK",
-  Oregon: "OR", Pennsylvania: "PA", "Rhode Island": "RI", "South Carolina": "SC",
-  "South Dakota": "SD", Tennessee: "TN", Texas: "TX", Utah: "UT",
-  Vermont: "VT", Virginia: "VA", Washington: "WA", "West Virginia": "WV",
-  Wisconsin: "WI", Wyoming: "WY", "District of Columbia": "DC",
-};
-
-function pct(s: string | undefined): number {
-  if (!s) return 0;
-  const n = parseFloat(s);
-  return Number.isFinite(n) ? n / 100 : 0;
-}
-
-const states: UsState[] = Object.entries(file.states)
-  .map(([name, record]) => ({
-    code: POSTAL_CODES[name] ?? name.slice(0, 2).toUpperCase(),
-    name,
-    stateTax: pct(record.state),
-    avgLocalTax: pct(record.avg_local),
-    combinedTax: pct(record.combined),
-  }))
-  .sort((a, b) => a.name.localeCompare(b.name));
-
-const stateTaxMeta: StateTaxMeta = {
-  last_update: file.last_update,
-  updated_at: file.updated_at,
-};
+import { states } from "@/lib/catalog";
 
 interface StateSelectProps {
   value: string;
@@ -101,5 +34,3 @@ export function StateSelect({ value, onChange }: StateSelectProps) {
     </div>
   );
 }
-
-export { states, stateTaxMeta };

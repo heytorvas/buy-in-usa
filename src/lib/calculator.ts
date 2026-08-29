@@ -1,5 +1,3 @@
-export type PaymentMethod = "cash" | "global" | "credit";
-
 export interface CalculatorInput {
   priceUSD: number;
   stateTax: number;

@@ -1,27 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import banksRaw from "@/data/banks_spread.json";
-import { type PaymentMethod } from "@/lib/calculator";
-
-export interface Institution {
-  code: string;
-  name: string;
-  spread: number;
-  iof: number;
-}
-
-interface BanksFile {
-  source: string;
-  last_update: string;
-  cash: Institution & { note?: string };
-  accounts: Institution[];
-  banks: Institution[];
-}
-
-const data = banksRaw as BanksFile;
-const accounts = data.accounts;
-const banks = data.banks;
-const cashConfig = data.cash;
-const banksMeta = { source: data.source, last_update: data.last_update };
+import { accounts, banks, METHOD_LABEL, type PaymentMethod } from "@/lib/catalog";
 
 interface PaymentSectionProps {
   // single mode
@@ -42,11 +20,10 @@ interface PaymentSectionProps {
   onSelectedBanksChange: (codes: string[]) => void;
 }
 
-const METHOD_OPTIONS: { value: PaymentMethod; label: string }[] = [
-  { value: "cash", label: "Dinheiro" },
-  { value: "global", label: "Conta Internacional" },
-  { value: "credit", label: "Cartão de Crédito" },
-];
+const METHOD_OPTIONS = (Object.keys(METHOD_LABEL) as PaymentMethod[]).map((value) => ({
+  value,
+  label: METHOD_LABEL[value],
+}));
 
 const sortByName = <T extends { name: string }>(arr: T[]) =>
   arr.slice().sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
@@ -319,5 +296,3 @@ export function PaymentSection({
     </div>
   );
 }
-
-export { accounts, banks, banksMeta, cashConfig };
