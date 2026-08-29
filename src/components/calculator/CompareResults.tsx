@@ -43,9 +43,9 @@ function buildScenarios(input: CompareInput): ScenarioRow[] {
   ) => {
     const r = calculate({
       priceUSD,
-      stateTax: stateInfo.combinedTax,
+      stateTax: stateInfo.stateTax,
+      avgLocalTax: stateInfo.avgLocalTax,
       ptax: ptax.rate,
-      paymentMethod: method,
       spread,
       iofRate,
     });

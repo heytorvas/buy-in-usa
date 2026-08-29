@@ -74,13 +74,13 @@ const Index = () => {
   const result = useMemo(() => {
     return calculate({
       priceUSD,
-      stateTax: stateInfo.combinedTax, // state + average local
+      stateTax: stateInfo.stateTax,
+      avgLocalTax: stateInfo.avgLocalTax,
       ptax: ptax.rate,
-      paymentMethod: method,
       spread,
       iofRate,
     });
-  }, [priceUSD, stateInfo, method, spread, iofRate]);
+  }, [priceUSD, stateInfo, spread, iofRate]);
 
   const showResult = hasCalculated && result && priceUSD > 0;
 

@@ -53,16 +53,10 @@ export function ResultCard({
   const taxesPct = 1 - productPct;
   const hasSpread = spreadRate > 0;
 
-  // Split combined US sales tax into state and local components for display.
   const combinedTax = stateInfo.combinedTax;
-  const stateShare = combinedTax > 0 ? stateInfo.stateTax / combinedTax : 0;
-  const stateOnlyBRL = audit.stateTaxBRL * stateShare;
-  const localBRL = audit.stateTaxBRL - stateOnlyBRL;
-
-  // VET (Valor Efetivo de Turismo) — custo real por dólar de moeda,
-  // sem incluir a taxa de venda americana (que é custo do produto, não do câmbio).
-  // Fórmula: PTAX × (1 + spread) × (1 + IOF)
-  const vetPerUSD = ptax ? ptax.rate * (1 + spreadRate) * (1 + audit.iofRate) : 0;
+  const vetPerUSD = audit.vetPerUSD;
+  const stateOnlyBRL = audit.stateOnlyBRL;
+  const localBRL = audit.localTaxBRL;
 
   return (
     <div className="bg-card rounded-3xl p-8 border border-border shadow-warm flex flex-col items-center animate-fade-in">
