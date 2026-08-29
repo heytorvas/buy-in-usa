@@ -18,10 +18,10 @@ export function PriceInput({ value, onChange }: PriceInputProps) {
         <DollarSign className="text-muted-foreground absolute left-0 h-6 w-6" aria-hidden />
         <input
           id="price-usd"
+          type="text"
           inputMode="decimal"
-          type="number"
-          min="0"
-          step="0.01"
+          enterKeyHint="done"
+          pattern="[0-9]+([.,][0-9]+)?"
           placeholder="0.00"
           value={value}
           onChange={(e) => onChange(e.target.value)}

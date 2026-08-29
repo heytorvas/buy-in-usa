@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
 import { PriceInput } from "@/components/calculator/PriceInput";
 import { StateSelect } from "@/components/calculator/StateSelect";
 import { PaymentSection } from "@/components/calculator/PaymentSection";
@@ -44,15 +45,15 @@ const Index = () => {
     return stateInfo;
   }, [submitted]);
 
-  const handleCalculate = () => {
-    setSubmitted({ ...selection });
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document
-          .getElementById("resultado")
-          ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (parsePriceUsd(selection.priceStr) <= 0) return;
+    flushSync(() => {
+      setSubmitted({ ...selection });
     });
+    const resultadoEl = document.getElementById("resultado");
+    resultadoEl?.focus();
+    resultadoEl?.scrollIntoView?.({ block: "start" });
   };
 
   return (
@@ -74,7 +75,7 @@ const Index = () => {
           </p>
         </header>
 
-        <div className="flex flex-col gap-8">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-8">
           <section className="flex flex-col gap-4">
             <StepHeader number={1} title="Preço do Produto" />
             <PriceInput
@@ -112,16 +113,21 @@ const Index = () => {
           </section>
 
           <button
-            type="button"
-            onClick={handleCalculate}
+            type="submit"
             disabled={priceUSD <= 0}
             className="w-full bg-primary hover:bg-primary-deep text-primary-foreground font-bold text-lg py-5 rounded-2xl shadow-warm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
             Calcular Total
           </button>
+        </form>
 
-          {showResult && submitted && (
-            <section id="resultado" className="flex flex-col gap-4 mt-4 scroll-mt-6">
+        {showResult && submitted && (
+          <section
+            id="resultado"
+            tabIndex={-1}
+            aria-live="polite"
+            className="flex flex-col gap-4 mt-4 scroll-mt-6"
+          >
               <StepHeader
                 number={4}
                 title={submitted.compareMode ? "Comparativo" : "Resultado Final"}
@@ -142,8 +148,7 @@ const Index = () => {
                 )
               )}
             </section>
-          )}
-        </div>
+        )}
       </main>
     </div>
   );

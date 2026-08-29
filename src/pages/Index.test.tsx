@@ -49,4 +49,17 @@ describe("Index", () => {
     await typePrice(user, "100");
     expect(screen.queryByText(/Total Final Estimado/i)).not.toBeInTheDocument();
   });
+
+  it("submits on Enter from the price field", async () => {
+    const user = userEvent.setup();
+    render(<Index />);
+    const price = screen.getByLabelText(/dólares americanos/i);
+    await user.type(price, "80{Enter}");
+    expect(screen.getByText(/Total Final Estimado/i)).toBeInTheDocument();
+  });
+
+  it("names the compare switch", () => {
+    render(<Index />);
+    expect(screen.getByRole("switch", { name: /Modo Comparar/i })).toBeInTheDocument();
+  });
 });

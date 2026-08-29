@@ -63,7 +63,10 @@ export function PaymentSection({
       {/* Compare mode toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div
+            id="compare-mode-label"
+            className="text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+          >
             Modo Comparar
           </div>
           <p className="text-[11px] text-muted-foreground mt-1 max-w-[15rem]">
@@ -74,6 +77,7 @@ export function PaymentSection({
           type="button"
           role="switch"
           aria-checked={compareMode}
+          aria-labelledby="compare-mode-label"
           onClick={() => onCompareModeChange(!compareMode)}
           className={`relative w-12 h-7 rounded-full transition-colors ${
             compareMode ? "bg-primary" : "bg-input-bg"
@@ -93,15 +97,15 @@ export function PaymentSection({
             <label className="block text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wider">
               Método de Pagamento
             </label>
-            <div className="flex bg-input-bg rounded-xl p-1 gap-1" role="tablist" aria-label="Método de pagamento">
+            <div role="radiogroup" aria-label="Método de pagamento" className="flex bg-input-bg rounded-xl p-1 gap-1">
               {METHOD_OPTIONS.map((opt) => {
                 const selected = method === opt.value;
                 return (
                   <button
                     key={opt.value}
                     type="button"
-                    role="tab"
-                    aria-selected={selected}
+                    role="radio"
+                    aria-checked={selected}
                     onClick={() => onMethodChange(opt.value)}
                     className={`flex-1 py-3 px-2 text-center rounded-lg text-xs leading-tight transition-all ${
                       selected
